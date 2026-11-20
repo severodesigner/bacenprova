@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2448a5">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Caderno de Prova Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: caderno de questões à esquerda, cartão-resposta fixo à direita no desktop; no celular, coluna única com barra inferior e cartão em gaveta */
+:root {
+  --bg: #f2f4f8;
+  --surface: #ffffff;
+  --ink: #1a2233;
+  --muted: #5b6578;
+  --line: #dce1ea;
+  --accent: #2448a5;
+  --accent-soft: rgba(36, 72, 165, 0.08);
+  --on-accent: #ffffff;
+  --ok: #1f8a4c;
+  --ok-soft: rgba(31, 138, 76, 0.10);
+  --bad: #c4372b;
+  --bad-soft: rgba(196, 55, 43, 0.09);
+  --warn: #b86f00;
+  --paper: #fbfaf7;
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-text: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e121a; --surface: #161b26; --ink: #e5e8ef; --muted: #98a1b4; --line: #293041;
+    --accent: #7d9bff; --accent-soft: rgba(125, 155, 255, 0.14); --on-accent: #0e121a;
+    --ok: #4cc283; --ok-soft: rgba(76, 194, 131, 0.13); --bad: #f07468; --bad-soft: rgba(240, 116, 104, 0.13);
+    --warn: #f0b44c; --paper: #1a2030; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e121a; --surface: #161b26; --ink: #e5e8ef; --muted: #98a1b4; --line: #293041;
+  --accent: #7d9bff; --accent-soft: rgba(125, 155, 255, 0.14); --on-accent: #0e121a;
+  --ok: #4cc283; --ok-soft: rgba(76, 194, 131, 0.13); --bad: #f07468; --bad-soft: rgba(240, 116, 104, 0.13);
+  --warn: #f0b44c; --paper: #1a2030; color-scheme: dark;
+}
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+* { box-sizing: border-box; }
+h1, h2, h3 { text-wrap: balance; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- Capa ---------- */
+.inicio { padding-block: 32px 48px; }
+.capa { max-width: 760px; margin: 0 auto; display: grid; gap: 22px; }
+.capa h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 6px 0 4px; font-weight: 700; letter-spacing: -0.01em; }
+.capa .sub { color: var(--muted); margin: 0; font-size: 15px; }
+.campo { display: grid; gap: 6px; }
+.campo label { font-weight: 500; }
+.opcao { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.opcao .t { display: grid; gap: 2px; min-width: 0; }
+.opcao small { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.regras { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--muted); line-height: 1.5; }
+.regras b { color: var(--ink); font-weight: 600; }
+.disc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---------- Barra superior ---------- */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+.tb-title { display: grid; min-width: 0; }
+.tb-title strong { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-right { display: flex; align-items: center; gap: 8px; flex: none; }
+.timer { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); color: var(--ink); }
+.timer.warn { color: var(--warn); border-color: var(--warn); }
+.timer.crit { color: var(--bad); border-color: var(--bad); animation: pulso 1s ease-in-out infinite; }
+@keyframes pulso { 50% { opacity: 0.55; } }
+.barra { height: 3px; background: var(--line); }
+.barra > i { display: block; height: 100%; background: var(--accent); transition: width 0.25s ease; }
+
+/* ---------- Prova ---------- */
+.prova-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; padding-block: 20px 40px; align-items: start; }
+.prova-grid.mobile { grid-template-columns: minmax(0, 1fr); padding-block: 14px 110px; }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); display: grid; gap: 14px; }
+.q { display: grid; gap: 18px; }
+.q-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.q-num { font-family: var(--font-num); font-weight: 600; font-size: 14px; }
+.q-of { color: var(--muted); font-size: 13px; margin-left: 6px; }
+.texto-base { margin: 0; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-text); font-size: 16px; line-height: 1.6; }
+.texto-base::before { content: "Texto-base"; display: block; font-family: var(--font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.enunciado { margin: 0; font-family: var(--font-text); font-size: 17px; line-height: 1.6; max-width: 68ch; }
+.alts { display: grid; gap: 10px; }
+.alt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 10px 12px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; transition: border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
+.alt:hover { border-color: var(--accent); }
+.alt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.alt .letra { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--muted); display: grid; place-items: center; font-family: var(--font-num); font-weight: 600; font-size: 14px; color: var(--ink); }
+.alt.sel .letra { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.alt .txt { flex: 1; min-width: 0; padding-top: 5px; font-family: var(--font-text); font-size: 16px; line-height: 1.5; }
+.alt.riscada .txt { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--muted); }
+.alt.riscada .letra { opacity: 0.45; }
+.alt .risc { flex: none; color: var(--muted); }
+.alt.riscada .risc { color: var(--bad); }
+.alt.rev { cursor: default; }
+.alt.rev:hover { border-color: var(--line); }
+.alt.correta, .alt.correta:hover { border-color: var(--ok); background: var(--ok-soft); }
+.alt.correta .letra { background: var(--ok); border-color: var(--ok); color: var(--on-accent); }
+.alt.errada, .alt.errada:hover { border-color: var(--bad); background: var(--bad-soft); }
+.alt.errada .letra { background: var(--bad); border-color: var(--bad); color: var(--on-accent); }
+.alt .marca { flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding-top: 8px; }
+.alt.correta .marca { color: var(--ok); }
+.alt.errada .marca { color: var(--bad); }
+.q-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.q-nav { display: flex; justify-content: space-between; gap: 10px; padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--line); }
+.atalhos { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.atalhos kbd { font-family: var(--font-num); font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--bg); color: var(--ink); }
+
+.bottombar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+.bottombar .meio { font-family: var(--font-num); font-size: 13px; color: var(--muted); text-align: center; }
+
+/* ---------- Cartão-resposta ---------- */
+.cartao { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.bolha { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-family: var(--font-num); padding: 0; transition: border-color 0.15s; }
+.bolha:hover { border-color: var(--accent); }
+.bolha .n { font-size: 13px; font-weight: 600; line-height: 1; }
+.bolha .r { font-size: 11px; color: var(--muted); line-height: 1; }
+.bolha.resp { background: var(--accent-soft); border-color: var(--accent); }
+.bolha.resp .r { color: var(--accent); font-weight: 600; }
+.bolha.atual { box-shadow: 0 0 0 2px var(--accent); }
+.bolha.marc::after { content: ""; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.bolha.certa { background: var(--ok-soft); border-color: var(--ok); }
+.bolha.certa .r { color: var(--ok); font-weight: 600; }
+.bolha.errada { background: var(--bad-soft); border-color: var(--bad); }
+.bolha.errada .r { color: var(--bad); font-weight: 600; }
+.bolha.branco { border-style: dashed; }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.legenda i { width: 10px; height: 10px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
+.legenda i.l-resp { background: var(--accent-soft); border-color: var(--accent); }
+.legenda i.l-marc { border-radius: 50%; background: var(--warn); border-color: var(--warn); }
+.legenda i.l-certa { background: var(--ok-soft); border-color: var(--ok); }
+.legenda i.l-errada { background: var(--bad-soft); border-color: var(--bad); }
+.legenda i.l-branco { border-style: dashed; border-color: var(--muted); }
+.resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.resumo b { display: block; font-family: var(--font-num); font-size: 20px; font-variant-numeric: tabular-nums; }
+.resumo small { color: var(--muted); font-size: 12px; }
+
+/* ---------- Resultado ---------- */
+.resultado { padding-block: 24px 56px; display: grid; gap: 20px; }
+.placar { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+.placar .info { flex: 1; min-width: 240px; display: grid; gap: 14px; }
+.placar h1 { margin: 0; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.stat { padding: 12px; border: 1px solid var(--line); border-radius: 10px; display: grid; gap: 2px; }
+.stat small { color: var(--muted); font-size: 12px; }
+.stat b { font-family: var(--font-num); font-size: 22px; font-variant-numeric: tabular-nums; }
+.stat.ok b { color: var(--ok); } .stat.bad b { color: var(--bad); }
+.duas { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.disc-linha { display: grid; gap: 4px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+.disc-linha:last-child { border-bottom: 0; }
+.disc-linha .top { display: flex; justify-content: space-between; gap: 10px; }
+.disc-linha .top span:last-child { font-family: var(--font-num); font-variant-numeric: tabular-nums; color: var(--muted); }
+.gab-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.gab-head h2 { margin: 0; font-size: 20px; }
+.gab-lista { display: grid; gap: 14px; }
+.gab-item { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 20px); }
+.coment { margin: 0; padding: 12px 14px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); line-height: 1.6; font-size: 14.5px; }
+.coment b { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+
+@media (max-width: 860px) {
+  .duas { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .enunciado { font-size: 16.5px; }
+  .tb-title strong { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/antd@5.21.6/dist/antd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ant-design/icons@5.5.1/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+/* =====================================================================
+   CONTEÚDO DA PROVA — substitua este objeto pelo material real.
+   tipo "me" = múltipla escolha (A–E); tipo "ce" = certo ou errado.
+   ===================================================================== */
+const PROVA = {
+  titulo: "Simulado — Analista Administrativo",
+  cargo: "Analista Administrativo · Nível superior",
+  orgao: "Órgão fictício (questões de demonstração)",
+  duracaoMin: 30,
+  questoes: [
+    { id: "q1", disciplina: "Língua Portuguesa", tipo: "me",
+      enunciado: "Assinale a alternativa em que o emprego do acento indicativo de crase está correto, de acordo com a norma-padrão.",
+      alternativas: [
+        "O servidor começou à elaborar o parecer técnico.",
+        "O relatório foi entregue à diretora do departamento.",
+        "Os candidatos ficaram frente à frente com a banca examinadora.",
+        "O edital será encaminhado à todos os inscritos.",
+        "Ele se referiu à esta questão durante a sessão."
+      ],
+      gabarito: "B",
+      comentario: "Quem entrega, entrega algo a alguém (preposição \"a\"), e \"a diretora\" traz o artigo \"a\": a + a = à. Nas demais não há crase: antes de verbo (A), em expressões com palavras repetidas (C), antes do pronome indefinido \"todos\" (D) e antes do pronome demonstrativo \"esta\" (E)." },
+    { id: "q2", disciplina: "Língua Portuguesa", tipo: "ce",
+      texto: "Os servidores, que participaram do treinamento, receberam o certificado na mesma semana.",
+      enunciado: "No período acima, a oração \"que participaram do treinamento\", por estar isolada por vírgulas, tem valor explicativo e indica que todos os servidores mencionados participaram do treinamento.",
+      gabarito: "C",
+      comentario: "Certo. Entre vírgulas, a oração subordinada adjetiva é explicativa: generaliza a informação para todos os servidores. Sem as vírgulas, seria restritiva e indicaria que apenas parte deles participou." },
+    { id: "q3", disciplina: "Direito Constitucional", tipo: "me",
+      enunciado: "Segundo a Constituição Federal de 1988, a casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo:",
+      alternativas: [
+        "a qualquer hora, por determinação de autoridade policial.",
+        "durante a noite, por determinação judicial fundamentada.",
+        "apenas em caso de flagrante delito, mediante mandado judicial.",
+        "em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial.",
+        "por requisição do Ministério Público, a qualquer hora."
+      ],
+      gabarito: "D",
+      comentario: "Literalidade do art. 5º, XI, da CF/88. Flagrante, desastre e socorro permitem a entrada a qualquer hora. A ordem judicial só pode ser cumprida durante o dia." },
+    { id: "q4", disciplina: "Direito Constitucional", tipo: "ce",
+      enunciado: "Conforme a Constituição Federal de 1988, são Poderes da União, independentes e harmônicos entre si, o Legislativo, o Executivo, o Judiciário e o Ministério Público.",
+      gabarito: "E",
+      comentario: "Errado. O art. 2º da CF/88 enumera apenas três Poderes: Legislativo, Executivo e Judiciário. O Ministério Público é função essencial à Justiça (arts. 127 a 130), não um Poder." },
+    { id: "q5", disciplina: "Direito Administrativo", tipo: "me",
+      enunciado: "Não constitui princípio expresso no caput do art. 37 da Constituição Federal, aplicável à administração pública direta e indireta:",
+      alternativas: ["Legalidade.", "Impessoalidade.", "Razoabilidade.", "Publicidade.", "Eficiência."],
+      gabarito: "C",
+      comentario: "O caput do art. 37 traz LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência. A razoabilidade é princípio implícito na Constituição, embora apareça expressamente no art. 2º da Lei nº 9.784/1999." },
+    { id: "q6", disciplina: "Raciocínio Lógico", tipo: "me",
+      enunciado: "A negação da proposição \"Todo servidor é pontual\" é:",
+      alternativas: [
+        "Algum servidor não é pontual.",
+        "Nenhum servidor é pontual.",
+        "Todo servidor não é pontual.",
+        "Algum servidor é pontual.",
+        "Nenhum servidor deixa de ser pontual."
+      ],
+      gabarito: "A",
+      comentario: "Para negar \"todo A é B\", basta um caso contrário: \"algum A não é B\". \"Nenhum servidor é pontual\" é a contrária, não a negação." },
+    { id: "q7", disciplina: "Raciocínio Lógico", tipo: "ce",
+      enunciado: "A proposição \"Se chove, então a rua fica molhada\" é logicamente equivalente a \"Se a rua não fica molhada, então não chove\".",
+      gabarito: "C",
+      comentario: "Certo. É a contrapositiva: p → q equivale a ~q → ~p. Cuidado com a recíproca (q → p), que não é equivalente." },
+    { id: "q8", disciplina: "Raciocínio Lógico", tipo: "me",
+      enunciado: "Um produto que custava R$ 200,00 sofreu um aumento de 10% e, em seguida, um desconto de 10% sobre o novo preço. O preço final do produto é:",
+      alternativas: ["R$ 200,00.", "R$ 202,00.", "R$ 196,00.", "R$ 198,00.", "R$ 180,00."],
+      gabarito: "D",
+      comentario: "200 × 1,10 = 220; 220 × 0,90 = 198. Aumentos e descontos sucessivos de mesma taxa não se anulam: o fator total é 1,10 × 0,90 = 0,99." },
+    { id: "q9", disciplina: "Noções de Informática", tipo: "me",
+      enunciado: "O protocolo utilizado para o envio de mensagens de correio eletrônico entre servidores é o:",
+      alternativas: ["POP3.", "IMAP.", "FTP.", "DNS.", "SMTP."],
+      gabarito: "E",
+      comentario: "SMTP (Simple Mail Transfer Protocol) faz o envio. POP3 e IMAP servem para o cliente receber ou acessar mensagens; FTP transfere arquivos e DNS resolve nomes de domínio." },
+    { id: "q10", disciplina: "Noções de Informática", tipo: "ce",
+      enunciado: "O HTTPS emprega o protocolo TLS para criptografar os dados trafegados entre o navegador e o servidor.",
+      gabarito: "C",
+      comentario: "Certo. HTTPS é o HTTP sobre TLS (sucessor do SSL), que cifra a comunicação e autentica o servidor por meio de certificado digital." }
+  ]
+};
+
+/* ===================================================================== */
+const html = htm.bind(React.createElement);
+const { useState, useEffect, useMemo, useRef } = React;
+const { ConfigProvider, theme, App: AntApp, Button, Card, Tag, Progress, Drawer, Input, Switch, Tooltip, Grid, Alert, Segmented, Descriptions, Empty } = antd;
+const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, PlayCircleOutlined } = icons;
+
+const KEY = "caderno-prova-v1";
+const BLANK = { fase: "inicio", nome: "", anula: false, respostas: {}, riscadas: {}, marcadas: {}, atual: 0, inicioEm: null, fimEm: null, entregueEm: null };
+const carregar = () => { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } };
+const salvar = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+
+const LETRAS = "ABCDE";
+const opcoes = (q) => q.tipo === "ce" ? [{ k: "C", t: "Certo" }, { k: "E", t: "Errado" }] : q.alternativas.map((t, i) => ({ k: LETRAS[i], t }));
+const fmt = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0"); };
+const disciplinas = [...new Set(PROVA.questoes.map(q => q.disciplina))];
+
+function corrigir(st) {
+  const status = {}; let ac = 0, er = 0, br = 0; const disc = {};
+  PROVA.questoes.forEach(q => {
+    const r = st.respostas[q.id];
+    if (!disc[q.disciplina]) disc[q.disciplina] = { disc: q.disciplina, total: 0, acertos: 0, erros: 0 };
+    const d = disc[q.disciplina]; d.total++;
+    if (!r) { status[q.id] = "branco"; br++; }
+    else if (r === q.gabarito) { status[q.id] = "certa"; ac++; d.acertos++; }
+    else { status[q.id] = "errada"; er++; d.erros++; }
+  });
+  const total = PROVA.questoes.length;
+  const nota = st.anula ? Math.max(0, ac - er) : ac;
+  return { status, ac, er, br, nota, total, pct: Math.round((nota / total) * 100), porDisc: Object.values(disc) };
+}
+
+function useDark() {
+  const get = () => { const t = document.documentElement.getAttribute("data-theme"); if (t) return t === "dark"; return window.matchMedia("(prefers-color-scheme: dark)").matches; };
+  const [d, setD] = useState(get);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)"); const f = () => setD(get());
+    mq.addEventListener("change", f);
+    const mo = new MutationObserver(f); mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => { mq.removeEventListener("change", f); mo.disconnect(); };
+  }, []);
+  return d;
+}
+
+/* ---------- Componentes ---------- */
+function Timer({ fimEm, onEnd }) {
+  const [now, setNow] = useState(Date.now());
+  const fim = useRef(false);
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
+  const rest = fimEm - now;
+  useEffect(() => { if (rest <= 0 && !fim.current) { fim.current = true; onEnd(); } }, [rest <= 0]);
+  const cls = rest < 60000 ? "crit" : rest < 300000 ? "warn" : "";
+  return html`<span className=${"timer " + cls} role="timer" aria-label="Tempo restante"><${ClockCircleOutlined} /> ${fmt(rest)}</span>`;
+}
+
+function Alt({ o, sel, risc, onSel, onRisc, rev, marca }) {
+  const cls = ["alt", sel && "sel", risc && "riscada", rev && "rev", rev].filter(Boolean).join(" ");
+  if (rev !== undefined) {
+    return html`<div className=${cls}>
+      <span className="letra">${o.k}</span><span className="txt">${o.t}</span>
+      ${marca && html`<span className="marca">${marca}</span>`}
+    </div>`;
+  }
+  return html`<div className=${cls} role="radio" aria-checked=${!!sel} tabIndex="0"
+      onClick=${onSel} onKeyDown=${e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSel(); } }}>
+    <span className="letra">${o.k}</span>
+    <span className="txt">${o.t}</span>
+    <${Tooltip} title=${risc ? "Desfazer risco" : "Riscar alternativa"}>
+      <${Button} type="text" size="small" className="risc" aria-label=${(risc ? "Desfazer risco da alternativa " : "Riscar alternativa ") + o.k}
+        icon=${html`<${ScissorOutlined} />`}
+        onClick=${e => { e.stopPropagation(); onRisc(); }} onKeyDown=${e => e.stopPropagation()} />
+    <//>
+  </div>`;
+}
+
+function Cartao({ st, onIr, status }) {
+  return html`<div>
+    <div className="cartao">
+      ${PROVA.questoes.map((q, i) => {
+        const r = st.respostas[q.id];
+        let cls = "bolha";
+        if (status) cls += " " + status[q.id];
+        else { if (r) cls += " resp"; if (st.marcadas[q.id]) cls += " marc"; if (i === st.atual) cls += " atual"; }
+        return html`<button key=${q.id} className=${cls} onClick=${() => onIr(i)}
+          aria-label=${"Questão " + (i + 1) + (r ? ", resposta " + r : ", em branco") + (st.marcadas[q.id] ? ", marcada para revisão" : "")}>
+          <span className="n">${i + 1}</span><span className="r">${r || "–"}</span>
+        </button>`;
+      })}
+    </div>
+    <div className="legenda">
+      ${status
+        ? html`<span><i className="l-certa"></i>Acerto</span><span><i className="l-errada"></i>Erro</span><span><i className="l-branco"></i>Em branco</span>`
+        : html`<span><i className="l-resp"></i>Respondida</span><span><i className="l-marc"></i>Para revisar</span><span><i></i>Em branco</span>`}
+    </div>
+  </div>`;
+}
+
+function Questao({ q, idx, st, up }) {
+  const resp = st.respostas[q.id];
+  const risc = st.riscadas[q.id] || [];
+  const marc = !!st.marcadas[q.id];
+  const responder = (k) => up(s => {
+    const respostas = { ...s.respostas };
+    if (respostas[q.id] === k) delete respostas[q.id]; else respostas[q.id] = k;
+    const riscadas = { ...s.riscadas, [q.id]: (s.riscadas[q.id] || []).filter(x => x !== k) };
+    return { respostas, riscadas };
+  });
+  const riscar = (k) => up(s => {
+    const atual = s.riscadas[q.id] || [];
+    const nova = atual.includes(k) ? atual.filter(x => x !== k) : [...atual, k];
+    const respostas = { ...s.respostas };
+    if (!atual.includes(k) && respostas[q.id] === k) delete respostas[q.id];
+    return { riscadas: { ...s.riscadas, [q.id]: nova }, respostas };
+  });
+  const marcar = () => up(s => ({ marcadas: { ...s.marcadas, [q.id]: !s.marcadas[q.id] } }));
+
+  return html`<div className="q">
+    <div className="q-head">
+      <div><span className="q-num">Questão ${idx + 1}</span><span className="q-of">de ${PROVA.questoes.length}</span></div>
+      <div style=${{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        <${Tag} bordered=${false} style=${{ marginInlineEnd: 0 }}>${q.disciplina}<//>
+        <${Tag} bordered=${false} color=${q.tipo === "ce" ? "purple" : "blue"} style=${{ marginInlineEnd: 0 }}>${q.tipo === "ce" ? "Certo ou errado" : "Múltipla escolha"}<//>
+      </div>
+    </div>
+    ${q.texto && html`<blockquote className="texto-base">${q.texto}</blockquote>`}
+    <p className="enunciado">${q.enunciado}</p>
+    <div className="alts" role="radiogroup" aria-label=${"Alternativas da questão " + (idx + 1)}>
+      ${opcoes(q).map(o => html`<${Alt} key=${o.k} o=${o} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
+    </div>
+    <div className="q-tools">
+      <${Button} onClick=${marcar} icon=${marc ? html`<${FlagFilled} style=${{ color: "var(--warn)" }} />` : html`<${FlagOutlined} />`}>
+        ${marc ? "Marcada para revisão" : "Marcar para revisão"}
+      <//>
+      ${resp && html`<${Button} type="text" icon=${html`<${UndoOutlined} />`} onClick=${() => responder(resp)}>Deixar em branco<//>`}
+    </div>
+  </div>`;
+}
+
+/* ---------- Telas ---------- */
+function Inicio({ st, up, desktop }) {
+  const iniciar = () => {
+    const agora = Date.now();
+    up({ fase: "prova", inicioEm: agora, fimEm: agora + PROVA.duracaoMin * 60000, respostas: {}, riscadas: {}, marcadas: {}, atual: 0, entregueEm: null });
+  };
+  const nCE = PROVA.questoes.filter(q => q.tipo === "ce").length;
+  return html`<main className="wrap inicio">
+    <div className="capa">
+      <div>
+        <span className="eyebrow">Caderno de prova</span>
+        <h1>${PROVA.titulo}</h1>
+        <p className="sub">${PROVA.cargo} · ${PROVA.orgao}</p>
+      </div>
+      <${Descriptions} bordered size="small" column=${{ xs: 1, sm: 2 }} items=${[
+        { key: "q", label: "Questões", children: PROVA.questoes.length },
+        { key: "d", label: "Duração", children: PROVA.duracaoMin + " minutos" },
+        { key: "f", label: "Formato", children: (PROVA.questoes.length - nCE) + " múltipla escolha · " + nCE + " certo/errado" },
+        { key: "c", label: "Correção", children: st.anula ? "Uma errada anula uma certa" : "Apenas acertos contam" },
+        { key: "ds", label: "Disciplinas", span: { xs: 1, sm: 2 }, children: html`<div className="disc-tags">${disciplinas.map(d => html`<${Tag} key=${d} style=${{ marginInlineEnd: 0 }}>${d}<//>`)}</div>` }
+      ]} />
+      <${Alert} type="info" showIcon message="Questões de demonstração"
+        description="Este caderno usa 10 questões de exemplo para mostrar como a prova funciona. O conteúdo será trocado pelo material real da prova." />
+      <div className="campo">
+        <label htmlFor="nome">Nome do candidato (opcional)</label>
+        <${Input} id="nome" size="large" placeholder="Como aparece na inscrição" value=${st.nome} onChange=${e => up({ nome: e.target.value })} maxLength=${80} />
+      </div>
+      <div className="opcao">
+        <${Switch} id="anula" checked=${st.anula} onChange=${v => up({ anula: v })} />
+        <label className="t" htmlFor="anula">
+          <span>Uma errada anula uma certa</span>
+          <small>Correção no estilo Cebraspe: cada resposta errada desconta um acerto. Deixar em branco não desconta.</small>
+        </label>
+      </div>
+      <ul className="regras">
+        <li>O cronômetro começa quando você inicia. Ao zerar, <b>a prova é entregue automaticamente</b>.</li>
+        <li>Use a <b>tesoura</b> para riscar alternativas que você descartou.</li>
+        <li><b>Marque para revisão</b> as questões em que ficou em dúvida. Elas aparecem com um ponto no cartão-resposta.</li>
+        <li>Seu progresso fica salvo neste navegador se a página for fechada.</li>
+        ${desktop && html`<li>No teclado: <b>← →</b> navegam, <b>A–E</b> (ou <b>C</b>/<b>E</b>) respondem e <b>M</b> marca para revisão.</li>`}
+      </ul>
+      <div>
+        <${Button} type="primary" size="large" block=${!desktop} icon=${html`<${PlayCircleOutlined} />`} onClick=${iniciar}>Iniciar prova<//>
+      </div>
+    </div>
+  </main>`;
+}
+
+function ProvaView({ st, up, desktop, pedirEntrega, tempoEsgotado }) {
+  const [gaveta, setGaveta] = useState(false);
+  const total = PROVA.questoes.length;
+  const q = PROVA.questoes[st.atual];
+  const respondidas = Object.keys(st.respostas).length;
+  const marcadas = Object.values(st.marcadas).filter(Boolean).length;
+  const ir = (i) => { up({ atual: Math.max(0, Math.min(total - 1, i)) }); setGaveta(false); };
+
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [st.atual]);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.target.closest && e.target.closest("input, textarea, .ant-modal, .ant-drawer")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key.toUpperCase();
+      if (e.key === "ArrowRight") { ir(st.atual + 1); return; }
+      if (e.key === "ArrowLeft") { ir(st.atual - 1); return; }
+      if (k === "M") { up(s => ({ marcadas: { ...s.marcadas, [q.id]: !s.marcadas[q.id] } })); return; }
+      const validas = opcoes(q).map(o => o.k);
+      if (validas.includes(k)) {
+        up(s => { const r = { ...s.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [st.atual, q]);
+
+  const resumo = html`<div className="resumo">
+    <div><b>${respondidas}</b><small>respondidas</small></div>
+    <div><b>${total - respondidas}</b><small>em branco</small></div>
+    <div><b>${marcadas}</b><small>para revisar</small></div>
+  </div>`;
+
+  return html`<div>
+    <header className="topbar">
+      <div className="wrap topbar-in">
+        <div className="tb-title">
+          <span className="eyebrow">${st.nome ? st.nome : "Prova em andamento"}</span>
+          <strong>${PROVA.titulo}</strong>
+        </div>
+        <div className="tb-right">
+          <${Timer} fimEm=${st.fimEm} onEnd=${tempoEsgotado} />
+          ${!desktop && html`<${Button} aria-label="Abrir cartão-resposta" icon=${html`<${AppstoreOutlined} />`} onClick=${() => setGaveta(true)} />`}
+          <${Button} type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>${desktop ? "Entregar prova" : "Entregar"}<//>
+        </div>
+      </div>
+      <div className="barra" aria-hidden="true"><i style=${{ width: (respondidas / total) * 100 + "%" }}></i></div>
+    </header>
+
+    <main className=${"wrap prova-grid" + (desktop ? "" : " mobile")}>
+      <section style=${{ minWidth: 0 }}>
+        <${Card} styles=${{ body: { padding: desktop ? 28 : 18 } }}>
+          <${Questao} key=${q.id} q=${q} idx=${st.atual} st=${st} up=${up} />
+          ${desktop && html`<div className="q-nav">
+            <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${st.atual === 0} onClick=${() => ir(st.atual - 1)}>Anterior<//>
+            ${st.atual < total - 1
+              ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(st.atual + 1)}>Próxima <${RightOutlined} /><//>`
+              : html`<${Button} size="large" type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>Entregar prova<//>`}
+          </div>`}
+        <//>
+      </section>
+      ${desktop && html`<aside className="side">
+        <${Card} size="small" title="Cartão-resposta">
+          <${Cartao} st=${st} onIr=${ir} />
+        <//>
+        <${Card} size="small">${resumo}<//>
+        <div className="atalhos">Atalhos: <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>A</kbd>–<kbd>E</kbd> responder · <kbd>M</kbd> marcar</div>
+      </aside>`}
+    </main>
+
+    ${!desktop && html`<nav className="bottombar" aria-label="Navegação entre questões">
+      <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${st.atual === 0} onClick=${() => ir(st.atual - 1)}>Anterior<//>
+      <span className="meio">${st.atual + 1} / ${total}</span>
+      ${st.atual < total - 1
+        ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(st.atual + 1)}>Próxima <${RightOutlined} /><//>`
+        : html`<${Button} size="large" type="primary" onClick=${pedirEntrega}>Entregar<//>`}
+    </nav>`}
+
+    <${Drawer} title="Cartão-resposta" placement="bottom" height="auto" open=${gaveta} onClose=${() => setGaveta(false)}
+      styles=${{ body: { paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))" } }}>
+      <div style=${{ display: "grid", gap: 18, maxWidth: 520, margin: "0 auto" }}>
+        <${Cartao} st=${st} onIr=${ir} />
+        ${resumo}
+      </div>
+    <//>
+  </div>`;
+}
+
+function ResultadoView({ st, refazer, desktop }) {
+  const r = useMemo(() => corrigir(st), [st]);
+  const [filtro, setFiltro] = useState("todas");
+  const tempo = st.entregueEm && st.inicioEm ? Math.min(st.entregueEm, st.fimEm) - st.inicioEm : 0;
+  const lista = PROVA.questoes.map((q, i) => ({ q, i })).filter(({ q }) =>
+    filtro === "todas" ? true : filtro === "erradas" ? r.status[q.id] === "errada" : filtro === "branco" ? r.status[q.id] === "branco" : r.status[q.id] === "certa");
+  const irPara = (i) => {
+    setFiltro("todas");
+    setTimeout(() => { const el = document.getElementById("g-" + PROVA.questoes[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
+  };
+  const corPct = r.pct >= 70 ? "var(--ok)" : r.pct >= 50 ? "var(--warn)" : "var(--bad)";
+  const statusTag = { certa: html`<${Tag} color="success" bordered=${false}>Acertou<//>`, errada: html`<${Tag} color="error" bordered=${false}>Errou<//>`, branco: html`<${Tag} bordered=${false}>Em branco<//>` };
+
+  return html`<main className="wrap resultado">
+    <${Card} styles=${{ body: { padding: desktop ? 28 : 18 } }}>
+      <div className="placar">
+        <${Progress} type="dashboard" percent=${r.pct} size=${desktop ? 150 : 128} strokeColor=${corPct}
+          format=${p => html`<div style=${{ display: "grid", gap: 2 }}><span style=${{ fontFamily: "var(--font-num)", fontWeight: 600, color: "var(--ink)" }}>${p}%</span><span style=${{ fontSize: 12, color: "var(--muted)" }}>aproveitamento</span></div>`} />
+        <div className="info">
+          <div>
+            <span className="eyebrow">Prova entregue${st.nome ? " · " + st.nome : ""}</span>
+            <h1>${PROVA.titulo}</h1>
+            <span style=${{ color: "var(--muted)" }}>Tempo utilizado: ${fmt(tempo)} de ${PROVA.duracaoMin}:00 · ${st.anula ? "uma errada anula uma certa" : "apenas acertos contam"}</span>
+          </div>
+          <div className="stats">
+            <div className="stat ok"><small>Acertos</small><b>${r.ac}</b></div>
+            <div className="stat bad"><small>Erros</small><b>${r.er}</b></div>
+            <div className="stat"><small>Em branco</small><b>${r.br}</b></div>
+            <div className="stat"><small>Nota final</small><b>${r.nota}/${r.total}</b></div>
+          </div>
+        </div>
+      </div>
+    <//>
+
+    <div className="duas">
+      <${Card} title="Desempenho por disciplina" size="small">
+        ${r.porDisc.map(d => html`<div className="disc-linha" key=${d.disc}>
+          <div className="top"><span>${d.disc}</span><span>${d.acertos}/${d.total}</span></div>
+          <${Progress} percent=${Math.round((d.acertos / d.total) * 100)} size="small" strokeColor=${d.acertos / d.total >= 0.7 ? "var(--ok)" : d.acertos / d.total >= 0.5 ? "var(--warn)" : "var(--bad)"} />
+        </div>`)}
+      <//>
+      <${Card} title="Seu cartão-resposta" size="small">
+        <${Cartao} st=${st} onIr=${irPara} status=${r.status} />
+      <//>
+    </div>
+
+    <div className="gab-head">
+      <h2>Gabarito comentado</h2>
+      <${Segmented} value=${filtro} onChange=${setFiltro} options=${[
+        { label: "Todas (" + r.total + ")", value: "todas" },
+        { label: "Erros (" + r.er + ")", value: "erradas" },
+        { label: "Em branco (" + r.br + ")", value: "branco" },
+        { label: "Acertos (" + r.ac + ")", value: "certas" }
+      ]} />
+    </div>
+
+    <div className="gab-lista">
+      ${lista.length === 0 && html`<${Card}><${Empty} description="Nenhuma questão neste filtro." /><//>`}
+      ${lista.map(({ q, i }) => {
+        const resp = st.respostas[q.id];
+        return html`<${Card} key=${q.id} id=${"g-" + q.id} className="gab-item" styles=${{ body: { padding: desktop ? 24 : 16 } }}>
+          <div className="q">
+            <div className="q-head">
+              <div><span className="q-num">Questão ${i + 1}</span><span className="q-of">${q.disciplina}</span></div>
+              ${statusTag[r.status[q.id]]}
+            </div>
+            ${q.texto && html`<blockquote className="texto-base">${q.texto}</blockquote>`}
+            <p className="enunciado">${q.enunciado}</p>
+            <div className="alts">
+              ${opcoes(q).map(o => {
+                const ehGab = o.k === q.gabarito, ehResp = o.k === resp;
+                const rev = ehGab ? "correta" : ehResp ? "errada" : "";
+                const marca = ehGab && ehResp ? "Sua resposta" : ehGab ? "Gabarito" : ehResp ? "Sua resposta" : "";
+                return html`<${Alt} key=${o.k} o=${o} rev=${rev} marca=${marca} />`;
+              })}
+            </div>
+            <p className="coment"><b>Comentário</b>${q.comentario}</p>
+          </div>
+        <//>`;
+      })}
+    </div>
+
+    <div style=${{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <${Button} type="primary" size="large" icon=${html`<${ReloadOutlined} />`} onClick=${refazer}>Fazer a prova de novo<//>
+    </div>
+  </main>`;
+}
+
+/* ---------- App ---------- */
+function Main() {
+  const screens = Grid.useBreakpoint();
+  const desktop = !!screens.lg;
+  const { modal, message } = AntApp.useApp();
+  const [st, setSt] = useState(() => ({ ...BLANK, ...(carregar() || {}) }));
+  useEffect(() => { salvar(st); }, [st]);
+  const up = (patch) => setSt(s => ({ ...s, ...(typeof patch === "function" ? patch(s) : patch) }));
+
+  const entregar = () => { up({ fase: "resultado", entregueEm: Date.now() }); window.scrollTo({ top: 0 }); };
+  const tempoEsgotado = () => { message.warning("O tempo acabou. Sua prova foi entregue automaticamente.", 5); entregar(); };
+  const pedirEntrega = () => {
+    const resp = Object.keys(st.respostas).length, total = PROVA.questoes.length;
+    const marc = Object.values(st.marcadas).filter(Boolean).length;
+    const avisos = [];
+    if (total - resp > 0) avisos.push((total - resp) + (total - resp === 1 ? " questão em branco" : " questões em branco"));
+    if (marc > 0) avisos.push(marc + (marc === 1 ? " marcada para revisão" : " marcadas para revisão"));
+    modal.confirm({
+      title: "Entregar a prova?",
+      content: avisos.length ? "Você ainda tem " + avisos.join(" e ") + ". Depois de entregar, não é possível alterar as respostas." : "Todas as questões foram respondidas. Depois de entregar, não é possível alterar as respostas.",
+      okText: "Entregar prova", cancelText: "Continuar respondendo", onOk: entregar
+    });
+  };
+  const refazer = () => { setSt(s => ({ ...BLANK, nome: s.nome, anula: s.anula })); window.scrollTo({ top: 0 }); };
+
+  if (st.fase === "prova") return html`<${ProvaView} st=${st} up=${up} desktop=${desktop} pedirEntrega=${pedirEntrega} tempoEsgotado=${tempoEsgotado} />`;
+  if (st.fase === "resultado") return html`<${ResultadoView} st=${st} refazer=${refazer} desktop=${desktop} />`;
+  return html`<${Inicio} st=${st} up=${up} desktop=${desktop} />`;
+}
+
+function Root() {
+  const dark = useDark();
+  return html`<${ConfigProvider} theme=${{
+    algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    token: {
+      colorPrimary: dark ? "#5576e6" : "#2448a5",
+      colorBgContainer: dark ? "#161b26" : "#ffffff",
+      colorBgElevated: dark ? "#1c2230" : "#ffffff",
+      colorBorderSecondary: dark ? "#293041" : "#dce1ea",
+      colorBorder: dark ? "#353d50" : "#cdd3df",
+      borderRadius: 8,
+      fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      fontSize: 15
+    }
+  }}>
+    <${AntApp}><${Main} /><//>
+  <//>`;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(html`<${Root} />`);
+</script>
+</body>
+</html>
