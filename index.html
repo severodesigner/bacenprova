@@ -174,6 +174,20 @@ h1, h2, h3 { text-wrap: balance; }
 .alt.correta .marca-r { color: var(--ok); }
 .alt.errada .marca-r { color: var(--bad); }
 .q-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.vf-b:disabled { cursor: default; }
+.vf-b:disabled:hover { border-color: var(--line); }
+.vf-b.on:disabled.V:hover { border-color: var(--ok); }
+.vf-b.on:disabled.F:hover { border-color: var(--bad); }
+.feedback-wrap { display: grid; gap: 10px; scroll-margin-bottom: 96px; scroll-margin-top: 90px; }
+.feedback { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; font-size: 15px; line-height: 1.5; }
+.feedback .anticon { font-size: 20px; flex: none; margin-top: 1px; }
+.feedback.ok { background: var(--ok-soft); color: var(--ink); border: 1px solid var(--ok); }
+.feedback.ok .anticon, .feedback.ok b { color: var(--ok); }
+.feedback.bad { background: var(--bad-soft); color: var(--ink); border: 1px solid var(--bad); }
+.feedback.bad .anticon, .feedback.bad b { color: var(--bad); }
+.feedback .seqg { font-family: var(--font-num); font-weight: 600; }
+.resumo b.ok { color: var(--ok); }
+.resumo b.bad { color: var(--bad); }
 .q-nav { display: flex; justify-content: space-between; gap: 10px; padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--line); }
 .atalhos { color: var(--muted); font-size: 12px; line-height: 1.8; }
 .bottombar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
@@ -268,7 +282,7 @@ const MANIFESTO = {"provas": [{"id": 1, "total": 350}, {"id": 2, "total": 350}, 
 const html = htm.bind(React.createElement);
 const { useState, useEffect, useMemo, useRef } = React;
 const { ConfigProvider, theme, App: AntApp, Button, Card, Tag, Progress, Drawer, Switch, Tooltip, Grid, Segmented, Empty, Tabs, Checkbox, Select } = antd;
-const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, SunOutlined, MoonOutlined, ArrowRightOutlined, ArrowLeftOutlined, ThunderboltOutlined, PlayCircleOutlined } = icons;
+const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, SunOutlined, MoonOutlined, ArrowRightOutlined, ArrowLeftOutlined, ThunderboltOutlined, PlayCircleOutlined, CheckCircleFilled, CloseCircleFilled } = icons;
 
 const TAM_BLOCO = 20;
 const MIN_POR_Q = 3;
@@ -372,7 +386,10 @@ function Cartao({ s, onIr, status }) {
         const r = s.respostas[q.id];
         let cls = "bolha";
         if (status) cls += " " + status[q.id];
-        else { if (r) cls += " resp"; if (s.marcadas[q.id]) cls += " marc"; if (i === s.atual) cls += " atual"; }
+        else {
+          if (r) cls += s.imediata ? (r === q.gabarito ? " certa" : " errada") : " resp";
+          if (s.marcadas[q.id]) cls += " marc"; if (i === s.atual) cls += " atual";
+        }
         return html`<button key=${q.id} className=${cls} onClick=${() => onIr(i)}
           aria-label=${"Questão " + (i + 1) + (r ? ", resposta " + r : ", em branco") + (s.marcadas[q.id] ? ", marcada para revisão" : "")}>
           <span className="n">${i + 1}</span><span className="r">${r || "–"}</span>
@@ -382,6 +399,8 @@ function Cartao({ s, onIr, status }) {
     <div className="legenda">
       ${(status
         ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-branco", "Em branco"]]
+        : s.imediata
+        ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-marc", "Para revisar"], ["", "Em branco"]]
         : [["l-resp", "Respondida"], ["l-marc", "Para revisar"], ["", "Em branco"]]
       ).map(([c, t]) => html`<span key=${t}><i className=${c}></i>${t}</span>`)}
     </div>
@@ -397,12 +416,22 @@ function Questao({ q, idx, s, upS }) {
   const risc = s.riscadas[q.id] || [];
   const marc = !!s.marcadas[q.id];
   const vf = (s.vf && s.vf[q.id]) || [];
+  const travada = !!(s.imediata && resp);
+  const acertou = resp === q.gabarito;
+  const fbRef = useRef(null);
+  const antes = useRef(travada);
+  useEffect(() => {
+    if (travada && !antes.current && fbRef.current) fbRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    antes.current = travada;
+  }, [travada]);
   const responder = (k) => upS(x => {
+    if (x.imediata && x.respostas[q.id]) return {};
     const respostas = { ...x.respostas };
     if (respostas[q.id] === k) delete respostas[q.id]; else respostas[q.id] = k;
     return { respostas, riscadas: { ...x.riscadas, [q.id]: (x.riscadas[q.id] || []).filter(y => y !== k) } };
   });
   const riscar = (k) => upS(x => {
+    if (x.imediata && x.respostas[q.id]) return {};
     const atual = x.riscadas[q.id] || [];
     const nova = atual.includes(k) ? atual.filter(y => y !== k) : [...atual, k];
     const respostas = { ...x.respostas };
@@ -411,6 +440,7 @@ function Questao({ q, idx, s, upS }) {
   });
   const marcar = () => upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } }));
   const marcarVF = (i, v) => upS(x => {
+    if (x.imediata && x.respostas[q.id]) return {};
     const atual = ((x.vf || {})[q.id] || []).slice();
     atual[i] = atual[i] === v ? null : v;
     const patch = { vf: { ...(x.vf || {}), [q.id]: atual } };
@@ -421,7 +451,9 @@ function Questao({ q, idx, s, upS }) {
     return patch;
   });
   let dicaVF = null;
-  if (q.tipo === "vf" && q.itens.every((_, k) => vf[k])) {
+  if (travada) {
+    dicaVF = null;
+  } else if (q.tipo === "vf" && q.itens.every((_, k) => vf[k])) {
     const seq = vf.join(" - "); const i = q.alternativas.indexOf(seq);
     dicaVF = i >= 0 ? html`<p className="vf-hint">Sua sequência <b>${seq}</b> corresponde à alternativa <b>${LETRAS[i]}</b>.</p>`
                     : html`<p className="vf-hint">Nenhuma alternativa tem a sequência <b>${seq}</b>. Revise os itens.</p>`;
@@ -443,20 +475,32 @@ function Questao({ q, idx, s, upS }) {
       ${q.itens.map((t, k) => html`<li key=${k}>
         <div className="item-txt"><span className="item-n">${k + 1}</span><span>${t}</span></div>
         <div className="vf-tog" role="group" aria-label=${"Item " + (k + 1)}>
-          ${["V", "F"].map(v => html`<button key=${v} className=${"vf-b" + (vf[k] === v ? " on " + v : "")} aria-pressed=${vf[k] === v}
+          ${["V", "F"].map(v => html`<button key=${v} className=${"vf-b" + (vf[k] === v ? " on " + v : "")} aria-pressed=${vf[k] === v} disabled=${travada}
               aria-label=${(v === "V" ? "Verdadeiro" : "Falso") + ", item " + (k + 1)} onClick=${() => marcarVF(k, v)}>${v}</button>`)}
         </div>
       </li>`)}
     </ol>`}
     ${dicaVF}
     <div className="alts" role="radiogroup" aria-label=${"Alternativas da questão " + (idx + 1)}>
-      ${opcoes(q).map(o => html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
+      ${opcoes(q).map(o => travada
+        ? html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} rev=${o.k === q.gabarito ? "correta" : o.k === resp ? "errada" : ""}
+            marca=${o.k === resp ? "Sua resposta" : o.k === q.gabarito ? "Gabarito" : ""} />`
+        : html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
     </div>
+    ${travada && html`<div className="feedback-wrap" ref=${fbRef}>
+      <div className=${"feedback " + (acertou ? "ok" : "bad")} role="status">
+        ${acertou ? html`<${CheckCircleFilled} />` : html`<${CloseCircleFilled} />`}
+        ${acertou
+          ? html`<span><b>Você acertou.</b> A alternativa ${q.gabarito} é o gabarito.</span>`
+          : html`<span><b>Resposta errada.</b> O gabarito é a alternativa ${q.gabarito}${q.tipo === "vf" ? " (" : ""}${q.tipo === "vf" && html`<span className="seqg">${q.alternativas[LETRAS.indexOf(q.gabarito)]}</span>`}${q.tipo === "vf" ? ")" : ""}.</span>`}
+      </div>
+      <div className="coment"><b>Comentário</b><${Comentario} texto=${q.comentario} /></div>
+    </div>`}
     <div className="q-tools">
       <${Button} onClick=${marcar} icon=${marc ? html`<${FlagFilled} style=${{ color: "var(--warn)" }} />` : html`<${FlagOutlined} />`}>
         ${marc ? "Marcada para revisão" : "Marcar para revisão"}
       <//>
-      ${resp && html`<${Button} type="text" icon=${html`<${UndoOutlined} />`} onClick=${() => responder(resp)}>Deixar em branco<//>`}
+      ${resp && !travada && html`<${Button} type="text" icon=${html`<${UndoOutlined} />`} onClick=${() => responder(resp)}>Deixar em branco<//>`}
     </div>
   </div>`;
 }
@@ -531,7 +575,7 @@ function Selecao({ st, up, iniciar, desktop }) {
     const h = st.historico[`p${p.id}-b${b}`];
     const n = fim - ini + 1;
     comConfirmacao(`Prova ${p.id} · Bloco ${b}`,
-      `Questões ${ini} a ${fim} · ${n} questões${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : " · sem limite de tempo"}.` + (h ? ` Última tentativa: ${h.acertos}/${h.total}.` : ""),
+      `Questões ${ini} a ${fim} · ${n} questões${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : " · sem limite de tempo"}${st.correcaoImediata ? " · correção imediata" : ""}.` + (h ? ` Última tentativa: ${h.acertos}/${h.total}.` : ""),
       async () => {
         setCarregando("bloco");
         try {
@@ -546,7 +590,7 @@ function Selecao({ st, up, iniciar, desktop }) {
   const sortear = () => {
     const n = Math.min(qtd, pool);
     comConfirmacao("Simulado aleatório",
-      `${n} questões sorteadas de ${fProvas.length === PROVAS.length ? "todas as provas" : "Prova " + fProvas.slice().sort().join(", ")}${fTemas.length ? ", em " + fTemas.length + (fTemas.length === 1 ? " tema" : " temas") : ""}${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : ""}.`,
+      `${n} questões sorteadas de ${fProvas.length === PROVAS.length ? "todas as provas" : "Prova " + fProvas.slice().sort().join(", ")}${fTemas.length ? ", em " + fTemas.length + (fTemas.length === 1 ? " tema" : " temas") : ""}${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : ""}${st.correcaoImediata ? " · correção imediata" : ""}.`,
       async () => {
         setCarregando("rand");
         try {
@@ -646,7 +690,14 @@ function Selecao({ st, up, iniciar, desktop }) {
             <${Button} type="primary" size="large" block icon=${html`<${ThunderboltOutlined} />`} loading=${carregando === "rand"} disabled=${!pool || !!carregando} onClick=${sortear}>Sortear e começar<//>
           <//>
 
-          <${Card} size="small">
+          <${Card} size="small" styles=${{ body: { display: "grid", gap: 16 } }}>
+            <div className="opcao">
+              <${Switch} id="imediata" checked=${st.correcaoImediata} onChange=${v => up({ correcaoImediata: v })} />
+              <label className="t" htmlFor="imediata">
+                <span>Correção imediata</span>
+                <small>Mostra se você acertou, o gabarito e o comentário logo após cada resposta. Desligada, a correção só aparece ao entregar o bloco.</small>
+              </label>
+            </div>
             <div className="opcao">
               <${Switch} id="crono" checked=${st.cronometro} onChange=${v => up({ cronometro: v })} />
               <label className="t" htmlFor="crono">
@@ -685,18 +736,25 @@ function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
       if (e.key === "ArrowLeft") { ir(s.atual - 1); return; }
       if (k === "M") { upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } })); return; }
       if (LETRAS.includes(k) && k.length === 1) {
-        upS(x => { const r = { ...x.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
+        upS(x => { if (x.imediata && x.respostas[q.id]) return {}; const r = { ...x.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [s.atual, q]);
 
-  const resumo = html`<div className="resumo">
-    <div><b>${respondidas}</b><small>respondidas</small></div>
-    <div><b>${total - respondidas}</b><small>em branco</small></div>
-    <div><b>${marcadas}</b><small>para revisar</small></div>
-  </div>`;
+  const acertos = s.imediata ? s.questoes.filter(x => s.respostas[x.id] === x.gabarito).length : 0;
+  const resumo = s.imediata
+    ? html`<div className="resumo">
+        <div><b className="ok">${acertos}</b><small>acertos</small></div>
+        <div><b className="bad">${respondidas - acertos}</b><small>erros</small></div>
+        <div><b>${total - respondidas}</b><small>em branco</small></div>
+      </div>`
+    : html`<div className="resumo">
+        <div><b>${respondidas}</b><small>respondidas</small></div>
+        <div><b>${total - respondidas}</b><small>em branco</small></div>
+        <div><b>${marcadas}</b><small>para revisar</small></div>
+      </div>`;
 
   return html`<div>
     <header className="appbar">
@@ -876,7 +934,7 @@ function ResultadoView({ st, up, desktop, iniciar }) {
 }
 
 /* ---------- App ---------- */
-const BLANK = { tela: "boasvindas", sessao: null, historico: {}, ultimaProva: 1, cronometro: true, filtros: null };
+const BLANK = { tela: "boasvindas", sessao: null, historico: {}, ultimaProva: 1, cronometro: true, correcaoImediata: true, filtros: null };
 
 function Main() {
   const screens = Grid.useBreakpoint();
@@ -897,7 +955,7 @@ function Main() {
     const agora = Date.now();
     up(x => ({
       tela: "prova",
-      sessao: { chave, tipo, prova, bloco, titulo, filtros, questoes, respostas: {}, riscadas: {}, marcadas: {}, vf: {}, atual: 0,
+      sessao: { chave, tipo, prova, bloco, titulo, filtros, questoes, respostas: {}, riscadas: {}, marcadas: {}, vf: {}, atual: 0, imediata: x.correcaoImediata,
         inicioEm: agora, fimEm: x.cronometro ? agora + questoes.length * MIN_POR_Q * 60000 : null, entregueEm: null }
     }));
   };
