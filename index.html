@@ -186,6 +186,9 @@ h1, h2, h3 { text-wrap: balance; }
 .feedback.bad { background: var(--bad-soft); color: var(--ink); border: 1px solid var(--bad); }
 .feedback.bad .anticon, .feedback.bad b { color: var(--bad); }
 .feedback .seqg { font-family: var(--font-num); font-weight: 600; }
+.confirmar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 10px; }
+.confirmar.pronto { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+.confirmar-dica { flex: 1; min-width: 180px; font-size: 13px; color: var(--muted); line-height: 1.45; }
 .resumo b.ok { color: var(--ok); }
 .resumo b.bad { color: var(--bad); }
 .q-nav { display: flex; justify-content: space-between; gap: 10px; padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--line); }
@@ -282,7 +285,8 @@ const MANIFESTO = {"provas": [{"id": 1, "total": 350}, {"id": 2, "total": 350}, 
 const html = htm.bind(React.createElement);
 const { useState, useEffect, useMemo, useRef } = React;
 const { ConfigProvider, theme, App: AntApp, Button, Card, Tag, Progress, Drawer, Switch, Tooltip, Grid, Segmented, Empty, Tabs, Checkbox, Select } = antd;
-const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, SunOutlined, MoonOutlined, ArrowRightOutlined, ArrowLeftOutlined, ThunderboltOutlined, PlayCircleOutlined, CheckCircleFilled, CloseCircleFilled } = icons;
+const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, SunOutlined, MoonOutlined, ArrowRightOutlined, ArrowLeftOutlined, ThunderboltOutlined, PlayCircleOutlined, CheckCircleFilled, CloseCircleFilled, CheckOutlined } = icons;
+const confirmada = (s, id) => !!(s.imediata && s.confirmadas && s.confirmadas[id] && s.respostas[id]);
 
 const TAM_BLOCO = 20;
 const MIN_POR_Q = 3;
@@ -387,7 +391,7 @@ function Cartao({ s, onIr, status }) {
         let cls = "bolha";
         if (status) cls += " " + status[q.id];
         else {
-          if (r) cls += s.imediata ? (r === q.gabarito ? " certa" : " errada") : " resp";
+          if (r) cls += confirmada(s, q.id) ? (r === q.gabarito ? " certa" : " errada") : " resp";
           if (s.marcadas[q.id]) cls += " marc"; if (i === s.atual) cls += " atual";
         }
         return html`<button key=${q.id} className=${cls} onClick=${() => onIr(i)}
@@ -400,7 +404,7 @@ function Cartao({ s, onIr, status }) {
       ${(status
         ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-branco", "Em branco"]]
         : s.imediata
-        ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-marc", "Para revisar"], ["", "Em branco"]]
+        ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-resp", "Sem confirmar"], ["l-marc", "Para revisar"], ["", "Em branco"]]
         : [["l-resp", "Respondida"], ["l-marc", "Para revisar"], ["", "Em branco"]]
       ).map(([c, t]) => html`<span key=${t}><i className=${c}></i>${t}</span>`)}
     </div>
@@ -411,12 +415,12 @@ function Origem({ q }) {
   return html`<${Tag} bordered=${false}>Prova ${q.prova} · nº ${q.n}<//>`;
 }
 
-function Questao({ q, idx, s, upS }) {
+function Questao({ q, idx, s, upS, confirmar }) {
   const resp = s.respostas[q.id];
   const risc = s.riscadas[q.id] || [];
   const marc = !!s.marcadas[q.id];
   const vf = (s.vf && s.vf[q.id]) || [];
-  const travada = !!(s.imediata && resp);
+  const travada = confirmada(s, q.id);
   const acertou = resp === q.gabarito;
   const fbRef = useRef(null);
   const antes = useRef(travada);
@@ -425,13 +429,13 @@ function Questao({ q, idx, s, upS }) {
     antes.current = travada;
   }, [travada]);
   const responder = (k) => upS(x => {
-    if (x.imediata && x.respostas[q.id]) return {};
+    if (confirmada(x, q.id)) return {};
     const respostas = { ...x.respostas };
     if (respostas[q.id] === k) delete respostas[q.id]; else respostas[q.id] = k;
     return { respostas, riscadas: { ...x.riscadas, [q.id]: (x.riscadas[q.id] || []).filter(y => y !== k) } };
   });
   const riscar = (k) => upS(x => {
-    if (x.imediata && x.respostas[q.id]) return {};
+    if (confirmada(x, q.id)) return {};
     const atual = x.riscadas[q.id] || [];
     const nova = atual.includes(k) ? atual.filter(y => y !== k) : [...atual, k];
     const respostas = { ...x.respostas };
@@ -440,7 +444,7 @@ function Questao({ q, idx, s, upS }) {
   });
   const marcar = () => upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } }));
   const marcarVF = (i, v) => upS(x => {
-    if (x.imediata && x.respostas[q.id]) return {};
+    if (confirmada(x, q.id)) return {};
     const atual = ((x.vf || {})[q.id] || []).slice();
     atual[i] = atual[i] === v ? null : v;
     const patch = { vf: { ...(x.vf || {}), [q.id]: atual } };
@@ -487,6 +491,14 @@ function Questao({ q, idx, s, upS }) {
             marca=${o.k === resp ? "Sua resposta" : o.k === q.gabarito ? "Gabarito" : ""} />`
         : html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
     </div>
+    ${s.imediata && !travada && html`<div className=${"confirmar" + (resp ? " pronto" : "")}>
+      <${Button} type="primary" size="large" icon=${html`<${CheckOutlined} />`} disabled=${!resp} onClick=${confirmar}>
+        ${resp ? "Confirmar resposta " + resp : "Confirmar resposta"}
+      <//>
+      <span className="confirmar-dica">${resp
+        ? "Confira sua escolha. Depois de confirmar, o gabarito aparece e não é possível trocar."
+        : "Selecione uma alternativa e depois confirme para ver o gabarito."}</span>
+    </div>`}
     ${travada && html`<div className="feedback-wrap" ref=${fbRef}>
       <div className=${"feedback " + (acertou ? "ok" : "bad")} role="status">
         ${acertou ? html`<${CheckCircleFilled} />` : html`<${CloseCircleFilled} />`}
@@ -695,7 +707,7 @@ function Selecao({ st, up, iniciar, desktop }) {
               <${Switch} id="imediata" checked=${st.correcaoImediata} onChange=${v => up({ correcaoImediata: v })} />
               <label className="t" htmlFor="imediata">
                 <span>Correção imediata</span>
-                <small>Mostra se você acertou, o gabarito e o comentário logo após cada resposta. Desligada, a correção só aparece ao entregar o bloco.</small>
+                <small>Você seleciona a alternativa, confirma e vê na hora se acertou, com o gabarito e o comentário. Desligada, a correção só aparece ao entregar o bloco.</small>
               </label>
             </div>
             <div className="opcao">
@@ -725,6 +737,11 @@ function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
   const respondidas = Object.keys(s.respostas).length;
   const marcadas = Object.values(s.marcadas).filter(Boolean).length;
   const ir = (i) => { upS({ atual: Math.max(0, Math.min(total - 1, i)) }); setGaveta(false); };
+  const confirmar = () => upS(x => {
+    const id = x.questoes[x.atual].id;
+    return x.respostas[id] ? { confirmadas: { ...(x.confirmadas || {}), [id]: true } } : {};
+  });
+  const pendente = !!(s.imediata && s.respostas[q.id] && !confirmada(s, q.id));
 
   useEffect(() => { window.scrollTo({ top: 0 }); }, [s.atual]);
   useEffect(() => {
@@ -734,21 +751,27 @@ function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
       const k = e.key.toUpperCase();
       if (e.key === "ArrowRight") { ir(s.atual + 1); return; }
       if (e.key === "ArrowLeft") { ir(s.atual - 1); return; }
+      if (e.key === "Enter") {
+        if (e.target.closest && e.target.closest("button, [role=radio], a")) return;
+        if (s.imediata) { e.preventDefault(); confirmar(); }
+        return;
+      }
       if (k === "M") { upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } })); return; }
       if (LETRAS.includes(k) && k.length === 1) {
-        upS(x => { if (x.imediata && x.respostas[q.id]) return {}; const r = { ...x.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
+        upS(x => { if (confirmada(x, q.id)) return {}; const r = { ...x.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [s.atual, q]);
 
-  const acertos = s.imediata ? s.questoes.filter(x => s.respostas[x.id] === x.gabarito).length : 0;
+  const confirmadasQ = s.imediata ? s.questoes.filter(x => confirmada(s, x.id)) : [];
+  const acertos = confirmadasQ.filter(x => s.respostas[x.id] === x.gabarito).length;
   const resumo = s.imediata
     ? html`<div className="resumo">
         <div><b className="ok">${acertos}</b><small>acertos</small></div>
-        <div><b className="bad">${respondidas - acertos}</b><small>erros</small></div>
-        <div><b>${total - respondidas}</b><small>em branco</small></div>
+        <div><b className="bad">${confirmadasQ.length - acertos}</b><small>erros</small></div>
+        <div><b>${total - confirmadasQ.length}</b><small>a responder</small></div>
       </div>`
     : html`<div className="resumo">
         <div><b>${respondidas}</b><small>respondidas</small></div>
@@ -781,7 +804,7 @@ function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
     <main className=${"wrap prova-grid" + (desktop ? "" : " mobile")}>
       <section style=${{ minWidth: 0 }}>
         <${Card} styles=${{ body: { padding: desktop ? 28 : 16 } }}>
-          <${Questao} key=${q.id} q=${q} idx=${s.atual} s=${s} upS=${upS} />
+          <${Questao} key=${q.id} q=${q} idx=${s.atual} s=${s} upS=${upS} confirmar=${confirmar} />
           ${desktop && html`<div className="q-nav">
             <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${s.atual === 0} onClick=${() => ir(s.atual - 1)}>Anterior<//>
             ${s.atual < total - 1
@@ -793,14 +816,16 @@ function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
       ${desktop && html`<aside className="side">
         <${Card} size="small" title="Cartão-resposta"><${Cartao} s=${s} onIr=${ir} /><//>
         <${Card} size="small">${resumo}<//>
-        <div className="atalhos">Atalhos: <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>A</kbd>–<kbd>E</kbd> responder · <kbd>M</kbd> marcar</div>
+        <div className="atalhos">Atalhos: <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>A</kbd>–<kbd>E</kbd> ${s.imediata ? "selecionar" : "responder"}${s.imediata && html`<${React.Fragment}> · <kbd>Enter</kbd> confirmar<//>`} · <kbd>M</kbd> marcar</div>
       </aside>`}
     </main>
 
     ${!desktop && html`<nav className="bottombar" aria-label="Navegação entre questões">
       <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${s.atual === 0} onClick=${() => ir(s.atual - 1)}>Anterior<//>
       <span className="meio">${s.atual + 1} / ${total}</span>
-      ${s.atual < total - 1
+      ${pendente
+        ? html`<${Button} size="large" type="primary" icon=${html`<${CheckOutlined} />`} onClick=${confirmar}>Confirmar<//>`
+        : s.atual < total - 1
         ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(s.atual + 1)}>Próxima <${RightOutlined} /><//>`
         : html`<${Button} size="large" type="primary" onClick=${pedirEntrega}>Entregar<//>`}
     </nav>`}
@@ -940,7 +965,15 @@ function Main() {
   const screens = Grid.useBreakpoint();
   const desktop = !!screens.lg;
   const { modal, message } = AntApp.useApp();
-  const [st, setSt] = useState(() => ({ ...BLANK, ...(carregar() || {}), tela: "boasvindas" }));
+  const [st, setSt] = useState(() => {
+    const salvo = { ...BLANK, ...(carregar() || {}), tela: "boasvindas" };
+    const s = salvo.sessao;
+    if (s && s.imediata && !s.confirmadas) {
+      /* blocos iniciados antes da dupla confirmação: respostas já dadas contam como confirmadas */
+      salvo.sessao = { ...s, confirmadas: Object.fromEntries(Object.keys(s.respostas || {}).map(k => [k, true])) };
+    }
+    return salvo;
+  });
   useEffect(() => { const { tela, ...resto } = st; salvar({ ...resto, tela: tela === "boasvindas" ? "selecao" : tela }); }, [st]);
   const up = (patch) => setSt(x => ({ ...x, ...(typeof patch === "function" ? patch(x) : patch) }));
   const upS = (patch) => setSt(x => ({ ...x, sessao: { ...x.sessao, ...(typeof patch === "function" ? patch(x.sessao) : patch) } }));
@@ -955,7 +988,7 @@ function Main() {
     const agora = Date.now();
     up(x => ({
       tela: "prova",
-      sessao: { chave, tipo, prova, bloco, titulo, filtros, questoes, respostas: {}, riscadas: {}, marcadas: {}, vf: {}, atual: 0, imediata: x.correcaoImediata,
+      sessao: { chave, tipo, prova, bloco, titulo, filtros, questoes, respostas: {}, riscadas: {}, marcadas: {}, vf: {}, confirmadas: {}, atual: 0, imediata: x.correcaoImediata,
         inicioEm: agora, fimEm: x.cronometro ? agora + questoes.length * MIN_POR_Q * 60000 : null, entregueEm: null }
     }));
   };
@@ -973,6 +1006,8 @@ function Main() {
     const avisos = [];
     if (total - resp > 0) avisos.push((total - resp) + (total - resp === 1 ? " questão em branco" : " questões em branco"));
     if (marc > 0) avisos.push(marc + (marc === 1 ? " marcada para revisão" : " marcadas para revisão"));
+    const semConf = s.imediata ? s.questoes.filter(q => s.respostas[q.id] && !confirmada(s, q.id)).length : 0;
+    if (semConf > 0) avisos.push(semConf + (semConf === 1 ? " resposta selecionada sem confirmar, que vai contar como respondida" : " respostas selecionadas sem confirmar, que vão contar como respondidas"));
     modal.confirm({
       title: "Entregar o bloco?",
       content: avisos.length ? "Você ainda tem " + avisos.join(" e ") + ". Depois de entregar, não é possível alterar as respostas." : "Todas as questões foram respondidas. Depois de entregar, não é possível alterar as respostas.",

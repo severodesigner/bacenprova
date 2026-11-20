@@ -5,7 +5,7 @@ App responsivo (celular e desktop), feito com React e Ant Design 5, para resolve
 - Tela de boas-vindas
 - Escolha da prova, dividida em blocos de até 20 questões
 - Simulado aleatório que mistura as questões, com filtro por prova e por tema
-- Correção imediata (padrão): gabarito e comentário logo após cada resposta
+- Correção imediata (padrão) com dupla confirmação: seleciona, confirma e vê o gabarito e o comentário
 - Questões V/F com marcação item a item
 - Cronômetro opcional (3 min por questão), riscar alternativas e marcar para revisão
 - Gabarito comentado com a página do manual e temas para revisar
