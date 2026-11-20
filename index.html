@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2448a5">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Caderno de Prova Digital</title>
+<title>Simulado COSIF BACEN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,500&display=swap">
 <style>
-/* Layout: caderno de questões à esquerda, cartão-resposta fixo à direita no desktop; no celular, coluna única com barra inferior e cartão em gaveta */
+/* Layout: boas-vindas em tela cheia; seleção em duas colunas (blocos | aleatório); prova com caderno + cartão-resposta lateral; no celular tudo em coluna única */
 :root {
   --bg: #f2f4f8;
   --surface: #ffffff;
@@ -25,6 +25,7 @@
   --bad: #c4372b;
   --bad-soft: rgba(196, 55, 43, 0.09);
   --warn: #b86f00;
+  --warn-soft: rgba(184, 111, 0, 0.10);
   --paper: #fbfaf7;
   --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-text: "Source Serif 4", Georgia, "Times New Roman", serif;
@@ -35,46 +36,94 @@
     --bg: #0e121a; --surface: #161b26; --ink: #e5e8ef; --muted: #98a1b4; --line: #293041;
     --accent: #7d9bff; --accent-soft: rgba(125, 155, 255, 0.14); --on-accent: #0e121a;
     --ok: #4cc283; --ok-soft: rgba(76, 194, 131, 0.13); --bad: #f07468; --bad-soft: rgba(240, 116, 104, 0.13);
-    --warn: #f0b44c; --paper: #1a2030; color-scheme: dark;
+    --warn: #f0b44c; --warn-soft: rgba(240, 180, 76, 0.13); --paper: #1a2030; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e121a; --surface: #161b26; --ink: #e5e8ef; --muted: #98a1b4; --line: #293041;
   --accent: #7d9bff; --accent-soft: rgba(125, 155, 255, 0.14); --on-accent: #0e121a;
   --ok: #4cc283; --ok-soft: rgba(76, 194, 131, 0.13); --bad: #f07468; --bad-soft: rgba(240, 116, 104, 0.13);
-  --warn: #f0b44c; --paper: #1a2030; color-scheme: dark;
+  --warn: #f0b44c; --warn-soft: rgba(240, 180, 76, 0.13); --paper: #1a2030; color-scheme: dark;
 }
-html, body { min-height: 100%; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; -webkit-font-smoothing: antialiased; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; -webkit-font-smoothing: antialiased; transition: background 0.2s; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+#root { min-height: 100%; display: flex; flex-direction: column; }
+#root > * { flex: 1 0 auto; }
 * { box-sizing: border-box; }
 h1, h2, h3 { text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-/* ---------- Capa ---------- */
-.inicio { padding-block: 32px 48px; }
-.capa { max-width: 760px; margin: 0 auto; display: grid; gap: 22px; }
-.capa h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 6px 0 4px; font-weight: 700; letter-spacing: -0.01em; }
-.capa .sub { color: var(--muted); margin: 0; font-size: 15px; }
-.campo { display: grid; gap: 6px; }
-.campo label { font-weight: 500; }
-.opcao { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-.opcao .t { display: grid; gap: 2px; min-width: 0; }
-.opcao small { color: var(--muted); font-size: 13px; line-height: 1.45; }
-.regras { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--muted); line-height: 1.5; }
-.regras b { color: var(--ink); font-weight: 600; }
-.disc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+/* ---------- Boas-vindas ---------- */
+.welcome { display: flex; flex-direction: column; }
+.welcome-top { display: flex; justify-content: space-between; align-items: center; padding-block: 14px; }
+.marca { font-family: var(--font-num); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); }
+.welcome-main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 26px; padding-block: 24px 64px; max-width: 900px; }
+.frase { margin: 0; }
+.frase p { margin: 0; font-family: var(--font-text); font-style: italic; font-weight: 500; font-size: clamp(52px, 12vw, 116px); line-height: 0.98; letter-spacing: -0.025em; color: var(--ink); }
+.frase p .q { color: var(--accent); }
+.frase footer { margin-top: 18px; font-size: 15px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.frase footer::before { content: ""; width: 28px; height: 1px; background: var(--muted); }
+.welcome-sub { margin: 0; max-width: 46ch; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.welcome-sub b { color: var(--ink); font-weight: 600; }
+.enter-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.dica { font-size: 13px; color: var(--muted); }
+.dica kbd, .atalhos kbd { font-family: var(--font-num); font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); color: var(--ink); }
+.btn-enter { height: 52px !important; padding-inline: 34px !important; font-size: 17px !important; font-weight: 600 !important; }
+@media (prefers-reduced-motion: no-preference) {
+  .welcome-main > * { animation: sobe 0.6s cubic-bezier(.2,.7,.2,1) both; }
+  .welcome-main > *:nth-child(2) { animation-delay: 0.05s; }
+  .welcome-main > *:nth-child(3) { animation-delay: 0.12s; }
+  .welcome-main > *:nth-child(4) { animation-delay: 0.18s; }
+}
+@keyframes sobe { from { transform: translateY(10px); } to { transform: none; } }
 
-/* ---------- Barra superior ---------- */
-.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
-.topbar-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
-.tb-title { display: grid; min-width: 0; }
-.tb-title strong { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tb-right { display: flex; align-items: center; gap: 8px; flex: none; }
-.timer { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); color: var(--ink); }
+/* ---------- Seleção ---------- */
+.appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.appbar-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+.appbar-title { display: grid; min-width: 0; }
+.appbar-title strong { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.appbar-right { display: flex; align-items: center; gap: 8px; flex: none; }
+.selecao { padding-block: 22px 48px; display: grid; gap: 20px; }
+.sel-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+.sel-grid > * { min-width: 0; }
+.sel-side { display: grid; gap: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 74px); }
+.h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.sec-head { display: grid; gap: 4px; margin-bottom: 4px; }
+.sec-head p { margin: 0; color: var(--muted); line-height: 1.5; }
+.prova-resumo { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 13px; margin: 2px 0 14px; }
+.prova-resumo b { color: var(--ink); font-family: var(--font-num); font-weight: 600; }
+.blocos { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
+.bloco { text-align: left; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 12px; display: grid; gap: 6px; cursor: pointer; color: var(--ink); font: inherit; transition: border-color 0.15s, transform 0.15s; }
+.bloco:hover { border-color: var(--accent); }
+.bloco:active { transform: scale(0.98); }
+.bloco .t { font-weight: 600; font-size: 15px; }
+.bloco .r { font-family: var(--font-num); font-size: 12px; color: var(--muted); }
+.pill { justify-self: start; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--bg); color: var(--muted); font-family: var(--font-num); }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.mid { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.and { background: var(--accent-soft); color: var(--accent); }
+.campo { display: grid; gap: 6px; }
+.campo > label, .campo > .lbl { font-weight: 500; font-size: 14px; }
+.campo small { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.pool { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 8px; background: var(--bg); font-size: 13px; color: var(--muted); }
+.pool b { font-family: var(--font-num); font-size: 18px; color: var(--ink); }
+.opcao { display: flex; gap: 12px; align-items: flex-start; }
+.opcao .t { display: grid; gap: 2px; min-width: 0; }
+.opcao small { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.retomar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 10px; }
+.retomar .t { display: grid; gap: 2px; min-width: 0; }
+.retomar .t span { color: var(--muted); font-size: 13px; }
+.retomar .acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.rodape { color: var(--muted); font-size: 12.5px; line-height: 1.5; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* ---------- Barra da prova ---------- */
+.timer { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); color: var(--ink); white-space: nowrap; }
+.timer.livre { color: var(--muted); }
 .timer.warn { color: var(--warn); border-color: var(--warn); }
 .timer.crit { color: var(--bad); border-color: var(--bad); animation: pulso 1s ease-in-out infinite; }
 @keyframes pulso { 50% { opacity: 0.55; } }
@@ -89,9 +138,20 @@ h1, h2, h3 { text-wrap: balance; }
 .q-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .q-num { font-family: var(--font-num); font-weight: 600; font-size: 14px; }
 .q-of { color: var(--muted); font-size: 13px; margin-left: 6px; }
-.texto-base { margin: 0; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-text); font-size: 16px; line-height: 1.6; }
-.texto-base::before { content: "Texto-base"; display: block; font-family: var(--font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.enunciado { margin: 0; font-family: var(--font-text); font-size: 17px; line-height: 1.6; max-width: 68ch; }
+.q-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.q-tags .ant-tag { margin-inline-end: 0; white-space: normal; height: auto; line-height: 1.5; }
+.enunciado { margin: 0; font-family: var(--font-text); font-size: 17px; line-height: 1.6; max-width: 70ch; }
+.itens { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.itens li { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.item-txt { flex: 1; min-width: 0; display: flex; gap: 10px; font-family: var(--font-text); font-size: 16px; line-height: 1.55; }
+.item-n { flex: none; font-family: var(--font-num); font-weight: 600; font-size: 13px; color: var(--muted); padding-top: 3px; }
+.vf-tog { display: flex; gap: 4px; flex: none; }
+.vf-b { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-family: var(--font-num); font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.vf-b:hover { border-color: var(--accent); }
+.vf-b.on.V { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.vf-b.on.F { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+.vf-hint { margin: -6px 0 0; font-size: 13px; color: var(--muted); }
+.vf-hint b { font-family: var(--font-num); color: var(--ink); }
 .alts { display: grid; gap: 10px; }
 .alt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 10px 12px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; transition: border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
 .alt:hover { border-color: var(--accent); }
@@ -99,6 +159,7 @@ h1, h2, h3 { text-wrap: balance; }
 .alt .letra { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--muted); display: grid; place-items: center; font-family: var(--font-num); font-weight: 600; font-size: 14px; color: var(--ink); }
 .alt.sel .letra { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .alt .txt { flex: 1; min-width: 0; padding-top: 5px; font-family: var(--font-text); font-size: 16px; line-height: 1.5; }
+.alt .txt.seq { font-family: var(--font-num); font-size: 15px; letter-spacing: 0.04em; }
 .alt.riscada .txt { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--muted); }
 .alt.riscada .letra { opacity: 0.45; }
 .alt .risc { flex: none; color: var(--muted); }
@@ -109,20 +170,19 @@ h1, h2, h3 { text-wrap: balance; }
 .alt.correta .letra { background: var(--ok); border-color: var(--ok); color: var(--on-accent); }
 .alt.errada, .alt.errada:hover { border-color: var(--bad); background: var(--bad-soft); }
 .alt.errada .letra { background: var(--bad); border-color: var(--bad); color: var(--on-accent); }
-.alt .marca { flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding-top: 8px; }
-.alt.correta .marca { color: var(--ok); }
-.alt.errada .marca { color: var(--bad); }
+.alt .marca-r { flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding-top: 8px; }
+.alt.correta .marca-r { color: var(--ok); }
+.alt.errada .marca-r { color: var(--bad); }
 .q-tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .q-nav { display: flex; justify-content: space-between; gap: 10px; padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--line); }
-.atalhos { color: var(--muted); font-size: 12px; line-height: 1.6; }
-.atalhos kbd { font-family: var(--font-num); font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--bg); color: var(--ink); }
-
+.atalhos { color: var(--muted); font-size: 12px; line-height: 1.8; }
 .bottombar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+.bottombar > :last-child { justify-self: end; }
 .bottombar .meio { font-family: var(--font-num); font-size: 13px; color: var(--muted); text-align: center; }
 
 /* ---------- Cartão-resposta ---------- */
 .cartao { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-.bolha { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-family: var(--font-num); padding: 0; transition: border-color 0.15s; }
+.bolha { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-family: var(--font-num); padding: 0; transition: border-color 0.15s; }
 .bolha:hover { border-color: var(--accent); }
 .bolha .n { font-size: 13px; font-weight: 600; line-height: 1; }
 .bolha .r { font-size: 11px; color: var(--muted); line-height: 1; }
@@ -148,7 +208,7 @@ h1, h2, h3 { text-wrap: balance; }
 .resumo small { color: var(--muted); font-size: 12px; }
 
 /* ---------- Resultado ---------- */
-.resultado { padding-block: 24px 56px; display: grid; gap: 20px; }
+.resultado { padding-block: 22px 56px; display: grid; gap: 20px; }
 .placar { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
 .placar .info { flex: 1; min-width: 240px; display: grid; gap: 14px; }
 .placar h1 { margin: 0; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; }
@@ -157,25 +217,34 @@ h1, h2, h3 { text-wrap: balance; }
 .stat small { color: var(--muted); font-size: 12px; }
 .stat b { font-family: var(--font-num); font-size: 22px; font-variant-numeric: tabular-nums; }
 .stat.ok b { color: var(--ok); } .stat.bad b { color: var(--bad); }
-.duas { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.disc-linha { display: grid; gap: 4px; padding-block: 8px; border-bottom: 1px solid var(--line); }
-.disc-linha:last-child { border-bottom: 0; }
-.disc-linha .top { display: flex; justify-content: space-between; gap: 10px; }
-.disc-linha .top span:last-child { font-family: var(--font-num); font-variant-numeric: tabular-nums; color: var(--muted); }
+.res-acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+.duas { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.duas > * { min-width: 0; }
+.tema-linha { display: flex; justify-content: space-between; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
+.tema-linha:last-child { border-bottom: 0; }
+.tema-linha span:last-child { flex: none; font-family: var(--font-num); color: var(--bad); font-weight: 600; }
 .gab-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
-.gab-head h2 { margin: 0; font-size: 20px; }
+.gab-head .ant-segmented { max-width: 100%; overflow-x: auto; }
 .gab-lista { display: grid; gap: 14px; }
 .gab-item { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 20px); }
 .coment { margin: 0; padding: 12px 14px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); line-height: 1.6; font-size: 14.5px; }
-.coment b { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.coment > b { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.coment ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.coment .vf-ok { color: var(--ok); font-weight: 600; font-family: var(--font-num); }
+.coment .vf-no { color: var(--bad); font-weight: 600; font-family: var(--font-num); }
+.coment p { margin: 0; }
 
-@media (max-width: 860px) {
-  .duas { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 900px) {
+  .sel-grid, .duas { grid-template-columns: minmax(0, 1fr); }
+  .sel-side { position: static; }
 }
 @media (max-width: 560px) {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .enunciado { font-size: 16.5px; }
-  .tb-title strong { font-size: 14px; }
+  .appbar-title strong { font-size: 14px; }
+  .itens li { flex-direction: column; gap: 10px; }
+  .vf-tog { align-self: flex-end; }
+  .blocos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
@@ -193,115 +262,46 @@ h1, h2, h3 { text-wrap: balance; }
 <script src="https://cdn.jsdelivr.net/npm/@ant-design/icons@5.5.1/dist/index.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
 <script>
-/* =====================================================================
-   CONTEÚDO DA PROVA — substitua este objeto pelo material real.
-   tipo "me" = múltipla escolha (A–E); tipo "ce" = certo ou errado.
-   ===================================================================== */
-const PROVA = {
-  titulo: "Simulado — Analista Administrativo",
-  cargo: "Analista Administrativo · Nível superior",
-  orgao: "Órgão fictício (questões de demonstração)",
-  duracaoMin: 30,
-  questoes: [
-    { id: "q1", disciplina: "Língua Portuguesa", tipo: "me",
-      enunciado: "Assinale a alternativa em que o emprego do acento indicativo de crase está correto, de acordo com a norma-padrão.",
-      alternativas: [
-        "O servidor começou à elaborar o parecer técnico.",
-        "O relatório foi entregue à diretora do departamento.",
-        "Os candidatos ficaram frente à frente com a banca examinadora.",
-        "O edital será encaminhado à todos os inscritos.",
-        "Ele se referiu à esta questão durante a sessão."
-      ],
-      gabarito: "B",
-      comentario: "Quem entrega, entrega algo a alguém (preposição \"a\"), e \"a diretora\" traz o artigo \"a\": a + a = à. Nas demais não há crase: antes de verbo (A), em expressões com palavras repetidas (C), antes do pronome indefinido \"todos\" (D) e antes do pronome demonstrativo \"esta\" (E)." },
-    { id: "q2", disciplina: "Língua Portuguesa", tipo: "ce",
-      texto: "Os servidores, que participaram do treinamento, receberam o certificado na mesma semana.",
-      enunciado: "No período acima, a oração \"que participaram do treinamento\", por estar isolada por vírgulas, tem valor explicativo e indica que todos os servidores mencionados participaram do treinamento.",
-      gabarito: "C",
-      comentario: "Certo. Entre vírgulas, a oração subordinada adjetiva é explicativa: generaliza a informação para todos os servidores. Sem as vírgulas, seria restritiva e indicaria que apenas parte deles participou." },
-    { id: "q3", disciplina: "Direito Constitucional", tipo: "me",
-      enunciado: "Segundo a Constituição Federal de 1988, a casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo:",
-      alternativas: [
-        "a qualquer hora, por determinação de autoridade policial.",
-        "durante a noite, por determinação judicial fundamentada.",
-        "apenas em caso de flagrante delito, mediante mandado judicial.",
-        "em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial.",
-        "por requisição do Ministério Público, a qualquer hora."
-      ],
-      gabarito: "D",
-      comentario: "Literalidade do art. 5º, XI, da CF/88. Flagrante, desastre e socorro permitem a entrada a qualquer hora. A ordem judicial só pode ser cumprida durante o dia." },
-    { id: "q4", disciplina: "Direito Constitucional", tipo: "ce",
-      enunciado: "Conforme a Constituição Federal de 1988, são Poderes da União, independentes e harmônicos entre si, o Legislativo, o Executivo, o Judiciário e o Ministério Público.",
-      gabarito: "E",
-      comentario: "Errado. O art. 2º da CF/88 enumera apenas três Poderes: Legislativo, Executivo e Judiciário. O Ministério Público é função essencial à Justiça (arts. 127 a 130), não um Poder." },
-    { id: "q5", disciplina: "Direito Administrativo", tipo: "me",
-      enunciado: "Não constitui princípio expresso no caput do art. 37 da Constituição Federal, aplicável à administração pública direta e indireta:",
-      alternativas: ["Legalidade.", "Impessoalidade.", "Razoabilidade.", "Publicidade.", "Eficiência."],
-      gabarito: "C",
-      comentario: "O caput do art. 37 traz LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência. A razoabilidade é princípio implícito na Constituição, embora apareça expressamente no art. 2º da Lei nº 9.784/1999." },
-    { id: "q6", disciplina: "Raciocínio Lógico", tipo: "me",
-      enunciado: "A negação da proposição \"Todo servidor é pontual\" é:",
-      alternativas: [
-        "Algum servidor não é pontual.",
-        "Nenhum servidor é pontual.",
-        "Todo servidor não é pontual.",
-        "Algum servidor é pontual.",
-        "Nenhum servidor deixa de ser pontual."
-      ],
-      gabarito: "A",
-      comentario: "Para negar \"todo A é B\", basta um caso contrário: \"algum A não é B\". \"Nenhum servidor é pontual\" é a contrária, não a negação." },
-    { id: "q7", disciplina: "Raciocínio Lógico", tipo: "ce",
-      enunciado: "A proposição \"Se chove, então a rua fica molhada\" é logicamente equivalente a \"Se a rua não fica molhada, então não chove\".",
-      gabarito: "C",
-      comentario: "Certo. É a contrapositiva: p → q equivale a ~q → ~p. Cuidado com a recíproca (q → p), que não é equivalente." },
-    { id: "q8", disciplina: "Raciocínio Lógico", tipo: "me",
-      enunciado: "Um produto que custava R$ 200,00 sofreu um aumento de 10% e, em seguida, um desconto de 10% sobre o novo preço. O preço final do produto é:",
-      alternativas: ["R$ 200,00.", "R$ 202,00.", "R$ 196,00.", "R$ 198,00.", "R$ 180,00."],
-      gabarito: "D",
-      comentario: "200 × 1,10 = 220; 220 × 0,90 = 198. Aumentos e descontos sucessivos de mesma taxa não se anulam: o fator total é 1,10 × 0,90 = 0,99." },
-    { id: "q9", disciplina: "Noções de Informática", tipo: "me",
-      enunciado: "O protocolo utilizado para o envio de mensagens de correio eletrônico entre servidores é o:",
-      alternativas: ["POP3.", "IMAP.", "FTP.", "DNS.", "SMTP."],
-      gabarito: "E",
-      comentario: "SMTP (Simple Mail Transfer Protocol) faz o envio. POP3 e IMAP servem para o cliente receber ou acessar mensagens; FTP transfere arquivos e DNS resolve nomes de domínio." },
-    { id: "q10", disciplina: "Noções de Informática", tipo: "ce",
-      enunciado: "O HTTPS emprega o protocolo TLS para criptografar os dados trafegados entre o navegador e o servidor.",
-      gabarito: "C",
-      comentario: "Certo. HTTPS é o HTTP sobre TLS (sucessor do SSL), que cifra a comunicação e autentica o servidor por meio de certificado digital." }
-  ]
-};
+/* Conteúdo: 5 provas do Simulado COSIF (data/provaN.json), geradas a partir dos PDFs Prova_COSIF_FGV_BACEN_1..5 */
+const MANIFESTO = {"provas": [{"id": 1, "total": 350}, {"id": 2, "total": 350}, {"id": 3, "total": 350}, {"id": 4, "total": 350}, {"id": 5, "total": 350}], "temas": ["Arrendamento Mercantil", "Ativo", "Ativo Imobilizado", "Ativo Intangível", "Ativos e Passivos Fiscais", "Ativos Não Financeiros Mantidos para Venda", "Auditoria Independente", "Avaliação de Investimentos e Combinação de Negócios", "Balancete Cooperativo", "Conglomerado Prudencial", "Da Obrigatoriedade", "Demonstrações Financeiras de Divulgação", "Documentos Contábeis de Remessa", "Empresas em Liquidação Extrajudicial", "Grupos de Consórcio", "Instrumentos Financeiros", "Modelo do Documento nº 13", "Modelo do Documento nº 6", "Modelo do Documento nº 7", "Obrigações Sociais e Trabalhistas", "Outros Ativos Não Financeiros", "Pagamento Baseado em Ações", "Passivo", "Patrimônio Líquido e Remuneração do Capital Próprio", "Princípios Gerais", "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa", "Pronunciamento Técnico CPC 05 (R1) - Divulgação sobre Partes Relacionadas", "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações", "Pronunciamento Técnico CPC 23 - Políticas Contábeis, Mudança de Estimativa e Retificação de Erro", "Pronunciamento Técnico CPC 24 - Evento Subsequente", "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes", "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados", "Pronunciamento Técnico CPC 41 - Resultado por Ação", "Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo", "Provisões, Passivos Contingentes e Ativos Contingentes"], "contagem": {"1": {"Pronunciamento Técnico CPC 41 - Resultado por Ação": 7, "Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo": 12, "Demonstrações Financeiras de Divulgação": 24, "Ativo": 21, "Ativo Intangível": 14, "Balancete Cooperativo": 7, "Outros Ativos Não Financeiros": 3, "Passivo": 39, "Modelo do Documento nº 13": 9, "Pronunciamento Técnico CPC 23 - Políticas Contábeis, Mudança de Estimativa e Retificação de Erro": 5, "Patrimônio Líquido e Remuneração do Capital Próprio": 14, "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações": 10, "Pagamento Baseado em Ações": 2, "Avaliação de Investimentos e Combinação de Negócios": 21, "Ativo Imobilizado": 6, "Instrumentos Financeiros": 54, "Obrigações Sociais e Trabalhistas": 3, "Ativos Não Financeiros Mantidos para Venda": 14, "Princípios Gerais": 13, "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados": 7, "Empresas em Liquidação Extrajudicial": 12, "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes": 4, "Arrendamento Mercantil": 2, "Ativos e Passivos Fiscais": 4, "Provisões, Passivos Contingentes e Ativos Contingentes": 6, "Documentos Contábeis de Remessa": 12, "Conglomerado Prudencial": 5, "Auditoria Independente": 12, "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa": 1, "Grupos de Consórcio": 2, "Pronunciamento Técnico CPC 05 (R1) - Divulgação sobre Partes Relacionadas": 2, "Pronunciamento Técnico CPC 24 - Evento Subsequente": 2, "Modelo do Documento nº 7": 1}, "2": {"Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo": 8, "Avaliação de Investimentos e Combinação de Negócios": 19, "Ativos Não Financeiros Mantidos para Venda": 16, "Documentos Contábeis de Remessa": 6, "Passivo": 25, "Conglomerado Prudencial": 9, "Princípios Gerais": 15, "Instrumentos Financeiros": 48, "Ativo": 35, "Ativos e Passivos Fiscais": 9, "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa": 5, "Empresas em Liquidação Extrajudicial": 8, "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes": 5, "Pronunciamento Técnico CPC 41 - Resultado por Ação": 14, "Demonstrações Financeiras de Divulgação": 37, "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações": 7, "Arrendamento Mercantil": 2, "Pagamento Baseado em Ações": 4, "Obrigações Sociais e Trabalhistas": 3, "Auditoria Independente": 11, "Ativo Intangível": 6, "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados": 9, "Balancete Cooperativo": 7, "Patrimônio Líquido e Remuneração do Capital Próprio": 17, "Ativo Imobilizado": 3, "Modelo do Documento nº 13": 10, "Da Obrigatoriedade": 2, "Pronunciamento Técnico CPC 23 - Políticas Contábeis, Mudança de Estimativa e Retificação de Erro": 2, "Grupos de Consórcio": 1, "Outros Ativos Não Financeiros": 4, "Provisões, Passivos Contingentes e Ativos Contingentes": 3}, "3": {"Ativo Intangível": 11, "Passivo": 29, "Modelo do Documento nº 13": 10, "Princípios Gerais": 10, "Arrendamento Mercantil": 3, "Pagamento Baseado em Ações": 3, "Ativo Imobilizado": 4, "Demonstrações Financeiras de Divulgação": 28, "Avaliação de Investimentos e Combinação de Negócios": 18, "Ativo": 31, "Auditoria Independente": 22, "Instrumentos Financeiros": 52, "Ativos e Passivos Fiscais": 8, "Grupos de Consórcio": 7, "Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo": 8, "Provisões, Passivos Contingentes e Ativos Contingentes": 6, "Obrigações Sociais e Trabalhistas": 4, "Pronunciamento Técnico CPC 41 - Resultado por Ação": 12, "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações": 9, "Documentos Contábeis de Remessa": 5, "Ativos Não Financeiros Mantidos para Venda": 10, "Conglomerado Prudencial": 9, "Balancete Cooperativo": 12, "Patrimônio Líquido e Remuneração do Capital Próprio": 5, "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados": 9, "Outros Ativos Não Financeiros": 3, "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes": 6, "Pronunciamento Técnico CPC 05 (R1) - Divulgação sobre Partes Relacionadas": 2, "Empresas em Liquidação Extrajudicial": 9, "Pronunciamento Técnico CPC 23 - Políticas Contábeis, Mudança de Estimativa e Retificação de Erro": 3, "Da Obrigatoriedade": 1, "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa": 1}, "4": {"Ativo": 24, "Instrumentos Financeiros": 47, "Grupos de Consórcio": 4, "Passivo": 36, "Ativos e Passivos Fiscais": 6, "Demonstrações Financeiras de Divulgação": 36, "Princípios Gerais": 13, "Conglomerado Prudencial": 7, "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados": 10, "Avaliação de Investimentos e Combinação de Negócios": 26, "Patrimônio Líquido e Remuneração do Capital Próprio": 11, "Balancete Cooperativo": 4, "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes": 10, "Pronunciamento Técnico CPC 41 - Resultado por Ação": 13, "Provisões, Passivos Contingentes e Ativos Contingentes": 2, "Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo": 7, "Empresas em Liquidação Extrajudicial": 7, "Ativo Intangível": 5, "Ativo Imobilizado": 9, "Auditoria Independente": 24, "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações": 8, "Modelo do Documento nº 13": 9, "Documentos Contábeis de Remessa": 13, "Obrigações Sociais e Trabalhistas": 4, "Ativos Não Financeiros Mantidos para Venda": 5, "Outros Ativos Não Financeiros": 4, "Modelo do Documento nº 6": 1, "Pronunciamento Técnico CPC 05 (R1) - Divulgação sobre Partes Relacionadas": 1, "Arrendamento Mercantil": 2, "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa": 1, "Pagamento Baseado em Ações": 1}, "5": {"Auditoria Independente": 17, "Ativo": 34, "Demonstrações Financeiras de Divulgação": 38, "Instrumentos Financeiros": 51, "Pronunciamento Técnico CPC 23 - Políticas Contábeis, Mudança de Estimativa e Retificação de Erro": 3, "Conglomerado Prudencial": 12, "Documentos Contábeis de Remessa": 7, "Ativo Intangível": 7, "Ativos Não Financeiros Mantidos para Venda": 11, "Pronunciamento Técnico CPC 33 (R1) - Benefícios a Empregados": 13, "Arrendamento Mercantil": 5, "Provisões, Passivos Contingentes e Ativos Contingentes": 5, "Pronunciamento Técnico CPC 46 - Mensuração do Valor Justo": 6, "Pronunciamento Técnico CPC 25 - Provisões, Passivos Contingentes e Ativos Contingentes": 4, "Balancete Cooperativo": 6, "Passivo": 26, "Obrigações Sociais e Trabalhistas": 5, "Pronunciamento Técnico CPC 41 - Resultado por Ação": 9, "Pronunciamento Técnico CPC 10 (R1) - Pagamento Baseado em Ações": 8, "Avaliação de Investimentos e Combinação de Negócios": 23, "Empresas em Liquidação Extrajudicial": 8, "Outros Ativos Não Financeiros": 5, "Patrimônio Líquido e Remuneração do Capital Próprio": 9, "Princípios Gerais": 13, "Ativo Imobilizado": 4, "Pronunciamento Técnico CPC 05 (R1) - Divulgação sobre Partes Relacionadas": 3, "Modelo do Documento nº 13": 10, "Grupos de Consórcio": 1, "Ativos e Passivos Fiscais": 3, "Pronunciamento Técnico CPC 24 - Evento Subsequente": 2, "Pronunciamento Técnico CPC 03 (R2) - Demonstração dos Fluxos de Caixa": 2}}, "totalQuestoes": 1750};
 
-/* ===================================================================== */
 const html = htm.bind(React.createElement);
 const { useState, useEffect, useMemo, useRef } = React;
-const { ConfigProvider, theme, App: AntApp, Button, Card, Tag, Progress, Drawer, Input, Switch, Tooltip, Grid, Alert, Segmented, Descriptions, Empty } = antd;
-const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, PlayCircleOutlined } = icons;
+const { ConfigProvider, theme, App: AntApp, Button, Card, Tag, Progress, Drawer, Switch, Tooltip, Grid, Segmented, Empty, Tabs, Checkbox, Select } = antd;
+const { ScissorOutlined, FlagOutlined, FlagFilled, LeftOutlined, RightOutlined, AppstoreOutlined, ClockCircleOutlined, ReloadOutlined, SendOutlined, UndoOutlined, SunOutlined, MoonOutlined, ArrowRightOutlined, ArrowLeftOutlined, ThunderboltOutlined, PlayCircleOutlined } = icons;
 
-const KEY = "caderno-prova-v1";
-const BLANK = { fase: "inicio", nome: "", anula: false, respostas: {}, riscadas: {}, marcadas: {}, atual: 0, inicioEm: null, fimEm: null, entregueEm: null };
+const TAM_BLOCO = 20;
+const MIN_POR_Q = 3;
+const KEY = "cosif-bacen-v1";
+const TKEY = "cosif-bacen-tema";
+const PROVAS = MANIFESTO.provas;
+const TEMAS = MANIFESTO.temas;
+const nBlocos = (p) => Math.ceil(p.total / TAM_BLOCO);
+const fmt = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0"); };
+const num = (n) => n.toLocaleString("pt-BR");
+const LETRAS = "ABCDE";
+const opcoes = (q) => q.alternativas.map((t, i) => ({ k: LETRAS[i], t }));
+const embaralhar = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const faixa = (pct) => pct >= 70 ? "ok" : pct >= 50 ? "mid" : "bad";
+
+/* ---------- Armazenamento local ---------- */
 const carregar = () => { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } };
 const salvar = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+(function aplicarTemaSalvo() { try { const t = localStorage.getItem(TKEY); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
 
-const LETRAS = "ABCDE";
-const opcoes = (q) => q.tipo === "ce" ? [{ k: "C", t: "Certo" }, { k: "E", t: "Errado" }] : q.alternativas.map((t, i) => ({ k: LETRAS[i], t }));
-const fmt = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0"); };
-const disciplinas = [...new Set(PROVA.questoes.map(q => q.disciplina))];
-
-function corrigir(st) {
-  const status = {}; let ac = 0, er = 0, br = 0; const disc = {};
-  PROVA.questoes.forEach(q => {
-    const r = st.respostas[q.id];
-    if (!disc[q.disciplina]) disc[q.disciplina] = { disc: q.disciplina, total: 0, acertos: 0, erros: 0 };
-    const d = disc[q.disciplina]; d.total++;
-    if (!r) { status[q.id] = "branco"; br++; }
-    else if (r === q.gabarito) { status[q.id] = "certa"; ac++; d.acertos++; }
-    else { status[q.id] = "errada"; er++; d.erros++; }
-  });
-  const total = PROVA.questoes.length;
-  const nota = st.anula ? Math.max(0, ac - er) : ac;
-  return { status, ac, er, br, nota, total, pct: Math.round((nota / total) * 100), porDisc: Object.values(disc) };
+/* ---------- Carregamento das provas ---------- */
+const cache = {};
+function carregarProva(id) {
+  if (!cache[id]) {
+    cache[id] = fetch("data/prova" + id + ".json")
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(d => d.questoes.map(q => ({ ...q, id: "p" + id + "-" + q.n, prova: id })));
+    cache[id].catch(() => { delete cache[id]; });
+  }
+  return cache[id];
 }
 
+/* ---------- Tema claro/escuro ---------- */
 function useDark() {
   const get = () => { const t = document.documentElement.getAttribute("data-theme"); if (t) return t === "dark"; return window.matchMedia("(prefers-color-scheme: dark)").matches; };
   const [d, setD] = useState(get);
@@ -313,30 +313,50 @@ function useDark() {
   }, []);
   return d;
 }
+function TemaBtn({ comTexto }) {
+  const dark = useDark();
+  const alternar = () => { const t = dark ? "light" : "dark"; document.documentElement.setAttribute("data-theme", t); try { localStorage.setItem(TKEY, t); } catch (e) {} };
+  const rotulo = dark ? "Usar tema claro" : "Usar tema escuro";
+  const btn = html`<${Button} onClick=${alternar} aria-label=${rotulo} icon=${dark ? html`<${SunOutlined} />` : html`<${MoonOutlined} />`}>${comTexto ? (dark ? "Tema claro" : "Tema escuro") : null}<//>`;
+  return comTexto ? btn : html`<${Tooltip} title=${rotulo}>${btn}<//>`;
+}
 
-/* ---------- Componentes ---------- */
-function Timer({ fimEm, onEnd }) {
+/* ---------- Correção ---------- */
+function corrigir(s) {
+  const status = {}; let ac = 0, er = 0, br = 0; const temasErro = {};
+  s.questoes.forEach(q => {
+    const r = s.respostas[q.id];
+    if (!r) { status[q.id] = "branco"; br++; }
+    else if (r === q.gabarito) { status[q.id] = "certa"; ac++; }
+    else { status[q.id] = "errada"; er++; }
+    if (status[q.id] !== "certa") temasErro[q.tema] = (temasErro[q.tema] || 0) + 1;
+  });
+  const total = s.questoes.length;
+  return { status, ac, er, br, total, pct: Math.round((ac / total) * 100), temasErro: Object.entries(temasErro).sort((a, b) => b[1] - a[1]) };
+}
+
+/* ---------- Componentes da prova ---------- */
+function Timer({ s, onEnd }) {
   const [now, setNow] = useState(Date.now());
   const fim = useRef(false);
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
-  const rest = fimEm - now;
-  useEffect(() => { if (rest <= 0 && !fim.current) { fim.current = true; onEnd(); } }, [rest <= 0]);
+  const livre = !s.fimEm;
+  const rest = livre ? 0 : s.fimEm - now;
+  useEffect(() => { if (!livre && rest <= 0 && !fim.current) { fim.current = true; onEnd(); } }, [rest <= 0]);
+  if (livre) return html`<span className="timer livre" role="timer" aria-label="Tempo decorrido"><${ClockCircleOutlined} /> ${fmt(now - s.inicioEm)}</span>`;
   const cls = rest < 60000 ? "crit" : rest < 300000 ? "warn" : "";
   return html`<span className=${"timer " + cls} role="timer" aria-label="Tempo restante"><${ClockCircleOutlined} /> ${fmt(rest)}</span>`;
 }
 
-function Alt({ o, sel, risc, onSel, onRisc, rev, marca }) {
-  const cls = ["alt", sel && "sel", risc && "riscada", rev && "rev", rev].filter(Boolean).join(" ");
+function Alt({ o, seq, sel, risc, onSel, onRisc, rev, marca }) {
+  const cls = ["alt", sel && "sel", risc && "riscada", rev !== undefined && "rev", rev].filter(Boolean).join(" ");
+  const txt = html`<span className=${"txt" + (seq ? " seq" : "")}>${o.t}</span>`;
   if (rev !== undefined) {
-    return html`<div className=${cls}>
-      <span className="letra">${o.k}</span><span className="txt">${o.t}</span>
-      ${marca && html`<span className="marca">${marca}</span>`}
-    </div>`;
+    return html`<div className=${cls}><span className="letra">${o.k}</span>${txt}${marca && html`<span className="marca-r">${marca}</span>`}</div>`;
   }
   return html`<div className=${cls} role="radio" aria-checked=${!!sel} tabIndex="0"
       onClick=${onSel} onKeyDown=${e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSel(); } }}>
-    <span className="letra">${o.k}</span>
-    <span className="txt">${o.t}</span>
+    <span className="letra">${o.k}</span>${txt}
     <${Tooltip} title=${risc ? "Desfazer risco" : "Riscar alternativa"}>
       <${Button} type="text" size="small" className="risc" aria-label=${(risc ? "Desfazer risco da alternativa " : "Riscar alternativa ") + o.k}
         icon=${html`<${ScissorOutlined} />`}
@@ -345,59 +365,92 @@ function Alt({ o, sel, risc, onSel, onRisc, rev, marca }) {
   </div>`;
 }
 
-function Cartao({ st, onIr, status }) {
+function Cartao({ s, onIr, status }) {
   return html`<div>
     <div className="cartao">
-      ${PROVA.questoes.map((q, i) => {
-        const r = st.respostas[q.id];
+      ${s.questoes.map((q, i) => {
+        const r = s.respostas[q.id];
         let cls = "bolha";
         if (status) cls += " " + status[q.id];
-        else { if (r) cls += " resp"; if (st.marcadas[q.id]) cls += " marc"; if (i === st.atual) cls += " atual"; }
+        else { if (r) cls += " resp"; if (s.marcadas[q.id]) cls += " marc"; if (i === s.atual) cls += " atual"; }
         return html`<button key=${q.id} className=${cls} onClick=${() => onIr(i)}
-          aria-label=${"Questão " + (i + 1) + (r ? ", resposta " + r : ", em branco") + (st.marcadas[q.id] ? ", marcada para revisão" : "")}>
+          aria-label=${"Questão " + (i + 1) + (r ? ", resposta " + r : ", em branco") + (s.marcadas[q.id] ? ", marcada para revisão" : "")}>
           <span className="n">${i + 1}</span><span className="r">${r || "–"}</span>
         </button>`;
       })}
     </div>
     <div className="legenda">
-      ${status
-        ? html`<span><i className="l-certa"></i>Acerto</span><span><i className="l-errada"></i>Erro</span><span><i className="l-branco"></i>Em branco</span>`
-        : html`<span><i className="l-resp"></i>Respondida</span><span><i className="l-marc"></i>Para revisar</span><span><i></i>Em branco</span>`}
+      ${(status
+        ? [["l-certa", "Acerto"], ["l-errada", "Erro"], ["l-branco", "Em branco"]]
+        : [["l-resp", "Respondida"], ["l-marc", "Para revisar"], ["", "Em branco"]]
+      ).map(([c, t]) => html`<span key=${t}><i className=${c}></i>${t}</span>`)}
     </div>
   </div>`;
 }
 
-function Questao({ q, idx, st, up }) {
-  const resp = st.respostas[q.id];
-  const risc = st.riscadas[q.id] || [];
-  const marc = !!st.marcadas[q.id];
-  const responder = (k) => up(s => {
-    const respostas = { ...s.respostas };
+function Origem({ q }) {
+  return html`<${Tag} bordered=${false}>Prova ${q.prova} · nº ${q.n}<//>`;
+}
+
+function Questao({ q, idx, s, upS }) {
+  const resp = s.respostas[q.id];
+  const risc = s.riscadas[q.id] || [];
+  const marc = !!s.marcadas[q.id];
+  const vf = (s.vf && s.vf[q.id]) || [];
+  const responder = (k) => upS(x => {
+    const respostas = { ...x.respostas };
     if (respostas[q.id] === k) delete respostas[q.id]; else respostas[q.id] = k;
-    const riscadas = { ...s.riscadas, [q.id]: (s.riscadas[q.id] || []).filter(x => x !== k) };
-    return { respostas, riscadas };
+    return { respostas, riscadas: { ...x.riscadas, [q.id]: (x.riscadas[q.id] || []).filter(y => y !== k) } };
   });
-  const riscar = (k) => up(s => {
-    const atual = s.riscadas[q.id] || [];
-    const nova = atual.includes(k) ? atual.filter(x => x !== k) : [...atual, k];
-    const respostas = { ...s.respostas };
+  const riscar = (k) => upS(x => {
+    const atual = x.riscadas[q.id] || [];
+    const nova = atual.includes(k) ? atual.filter(y => y !== k) : [...atual, k];
+    const respostas = { ...x.respostas };
     if (!atual.includes(k) && respostas[q.id] === k) delete respostas[q.id];
-    return { riscadas: { ...s.riscadas, [q.id]: nova }, respostas };
+    return { riscadas: { ...x.riscadas, [q.id]: nova }, respostas };
   });
-  const marcar = () => up(s => ({ marcadas: { ...s.marcadas, [q.id]: !s.marcadas[q.id] } }));
+  const marcar = () => upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } }));
+  const marcarVF = (i, v) => upS(x => {
+    const atual = ((x.vf || {})[q.id] || []).slice();
+    atual[i] = atual[i] === v ? null : v;
+    const patch = { vf: { ...(x.vf || {}), [q.id]: atual } };
+    if (q.itens.every((_, k) => atual[k])) {
+      const idxAlt = q.alternativas.indexOf(atual.join(" - "));
+      if (idxAlt >= 0) patch.respostas = { ...x.respostas, [q.id]: LETRAS[idxAlt] };
+    }
+    return patch;
+  });
+  let dicaVF = null;
+  if (q.tipo === "vf" && q.itens.every((_, k) => vf[k])) {
+    const seq = vf.join(" - "); const i = q.alternativas.indexOf(seq);
+    dicaVF = i >= 0 ? html`<p className="vf-hint">Sua sequência <b>${seq}</b> corresponde à alternativa <b>${LETRAS[i]}</b>.</p>`
+                    : html`<p className="vf-hint">Nenhuma alternativa tem a sequência <b>${seq}</b>. Revise os itens.</p>`;
+  } else if (q.tipo === "vf") {
+    dicaVF = html`<p className="vf-hint">Marque V ou F em cada item para encontrar a alternativa, ou escolha direto abaixo.</p>`;
+  }
 
   return html`<div className="q">
     <div className="q-head">
-      <div><span className="q-num">Questão ${idx + 1}</span><span className="q-of">de ${PROVA.questoes.length}</span></div>
-      <div style=${{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-        <${Tag} bordered=${false} style=${{ marginInlineEnd: 0 }}>${q.disciplina}<//>
-        <${Tag} bordered=${false} color=${q.tipo === "ce" ? "purple" : "blue"} style=${{ marginInlineEnd: 0 }}>${q.tipo === "ce" ? "Certo ou errado" : "Múltipla escolha"}<//>
+      <div><span className="q-num">Questão ${idx + 1}</span><span className="q-of">de ${s.questoes.length}</span></div>
+      <div className="q-tags">
+        <${Tag} bordered=${false} color=${q.tipo === "vf" ? "purple" : "blue"}>${q.tipo === "vf" ? "Verdadeiro ou falso" : "Múltipla escolha"}<//>
+        <${Origem} q=${q} />
       </div>
     </div>
-    ${q.texto && html`<blockquote className="texto-base">${q.texto}</blockquote>`}
+    <div className="q-tags"><${Tag}>${q.tema}<//></div>
     <p className="enunciado">${q.enunciado}</p>
+    ${q.tipo === "vf" && html`<ol className="itens">
+      ${q.itens.map((t, k) => html`<li key=${k}>
+        <div className="item-txt"><span className="item-n">${k + 1}</span><span>${t}</span></div>
+        <div className="vf-tog" role="group" aria-label=${"Item " + (k + 1)}>
+          ${["V", "F"].map(v => html`<button key=${v} className=${"vf-b" + (vf[k] === v ? " on " + v : "")} aria-pressed=${vf[k] === v}
+              aria-label=${(v === "V" ? "Verdadeiro" : "Falso") + ", item " + (k + 1)} onClick=${() => marcarVF(k, v)}>${v}</button>`)}
+        </div>
+      </li>`)}
+    </ol>`}
+    ${dicaVF}
     <div className="alts" role="radiogroup" aria-label=${"Alternativas da questão " + (idx + 1)}>
-      ${opcoes(q).map(o => html`<${Alt} key=${o.k} o=${o} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
+      ${opcoes(q).map(o => html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} sel=${resp === o.k} risc=${risc.includes(o.k)} onSel=${() => responder(o.k)} onRisc=${() => riscar(o.k)} />`)}
     </div>
     <div className="q-tools">
       <${Button} onClick=${marcar} icon=${marc ? html`<${FlagFilled} style=${{ color: "var(--warn)" }} />` : html`<${FlagOutlined} />`}>
@@ -408,79 +461,236 @@ function Questao({ q, idx, st, up }) {
   </div>`;
 }
 
-/* ---------- Telas ---------- */
-function Inicio({ st, up, desktop }) {
-  const iniciar = () => {
-    const agora = Date.now();
-    up({ fase: "prova", inicioEm: agora, fimEm: agora + PROVA.duracaoMin * 60000, respostas: {}, riscadas: {}, marcadas: {}, atual: 0, entregueEm: null });
-  };
-  const nCE = PROVA.questoes.filter(q => q.tipo === "ce").length;
-  return html`<main className="wrap inicio">
-    <div className="capa">
-      <div>
-        <span className="eyebrow">Caderno de prova</span>
-        <h1>${PROVA.titulo}</h1>
-        <p className="sub">${PROVA.cargo} · ${PROVA.orgao}</p>
-      </div>
-      <${Descriptions} bordered size="small" column=${{ xs: 1, sm: 2 }} items=${[
-        { key: "q", label: "Questões", children: PROVA.questoes.length },
-        { key: "d", label: "Duração", children: PROVA.duracaoMin + " minutos" },
-        { key: "f", label: "Formato", children: (PROVA.questoes.length - nCE) + " múltipla escolha · " + nCE + " certo/errado" },
-        { key: "c", label: "Correção", children: st.anula ? "Uma errada anula uma certa" : "Apenas acertos contam" },
-        { key: "ds", label: "Disciplinas", span: { xs: 1, sm: 2 }, children: html`<div className="disc-tags">${disciplinas.map(d => html`<${Tag} key=${d} style=${{ marginInlineEnd: 0 }}>${d}<//>`)}</div>` }
-      ]} />
-      <${Alert} type="info" showIcon message="Questões de demonstração"
-        description="Este caderno usa 10 questões de exemplo para mostrar como a prova funciona. O conteúdo será trocado pelo material real da prova." />
-      <div className="campo">
-        <label htmlFor="nome">Nome do candidato (opcional)</label>
-        <${Input} id="nome" size="large" placeholder="Como aparece na inscrição" value=${st.nome} onChange=${e => up({ nome: e.target.value })} maxLength=${80} />
-      </div>
-      <div className="opcao">
-        <${Switch} id="anula" checked=${st.anula} onChange=${v => up({ anula: v })} />
-        <label className="t" htmlFor="anula">
-          <span>Uma errada anula uma certa</span>
-          <small>Correção no estilo Cebraspe: cada resposta errada desconta um acerto. Deixar em branco não desconta.</small>
-        </label>
-      </div>
-      <ul className="regras">
-        <li>O cronômetro começa quando você inicia. Ao zerar, <b>a prova é entregue automaticamente</b>.</li>
-        <li>Use a <b>tesoura</b> para riscar alternativas que você descartou.</li>
-        <li><b>Marque para revisão</b> as questões em que ficou em dúvida. Elas aparecem com um ponto no cartão-resposta.</li>
-        <li>Seu progresso fica salvo neste navegador se a página for fechada.</li>
-        ${desktop && html`<li>No teclado: <b>← →</b> navegam, <b>A–E</b> (ou <b>C</b>/<b>E</b>) respondem e <b>M</b> marca para revisão.</li>`}
-      </ul>
-      <div>
-        <${Button} type="primary" size="large" block=${!desktop} icon=${html`<${PlayCircleOutlined} />`} onClick=${iniciar}>Iniciar prova<//>
-      </div>
-    </div>
-  </main>`;
+function Comentario({ texto }) {
+  const partes = texto.split(/\s(?=\d\) [VF]\.)/);
+  if (partes.length > 1 || /^\d\) [VF]\./.test(texto)) {
+    return html`<ul>${partes.map((p, i) => {
+      const m = p.match(/^(\d\)) ([VF])\.\s*(.*)$/);
+      if (!m) return html`<li key=${i}>${p}</li>`;
+      return html`<li key=${i}><span className=${m[2] === "V" ? "vf-ok" : "vf-no"}>Item ${m[1].replace(")", "")}: ${m[2] === "V" ? "Verdadeiro" : "Falso"}.</span> ${m[3]}</li>`;
+    })}</ul>`;
+  }
+  return html`<p>${texto}</p>`;
 }
 
-function ProvaView({ st, up, desktop, pedirEntrega, tempoEsgotado }) {
-  const [gaveta, setGaveta] = useState(false);
-  const total = PROVA.questoes.length;
-  const q = PROVA.questoes[st.atual];
-  const respondidas = Object.keys(st.respostas).length;
-  const marcadas = Object.values(st.marcadas).filter(Boolean).length;
-  const ir = (i) => { up({ atual: Math.max(0, Math.min(total - 1, i)) }); setGaveta(false); };
+/* ---------- Telas ---------- */
+function BoasVindas({ entrar, desktop }) {
+  useEffect(() => {
+    const f = (e) => { if (e.key === "Enter" && !(e.target.closest && e.target.closest("button"))) entrar(); };
+    window.addEventListener("keydown", f); return () => window.removeEventListener("keydown", f);
+  }, []);
+  return html`<div className="welcome">
+    <div className="wrap welcome-top"><span className="marca">COSIF · BACEN</span><${TemaBtn} /></div>
+    <main className="wrap welcome-main">
+      <span className="eyebrow">Simulado COSIF · Banco Central do Brasil</span>
+      <blockquote className="frase">
+        <p>Você tem brio<span className="q">?</span></p>
+        <footer>Clóvis de Barros Filho</footer>
+      </blockquote>
+      <p className="welcome-sub"><b>${PROVAS.length} provas</b> no estilo FGV, <b>${num(MANIFESTO.totalQuestoes)} questões</b> com gabarito comentado e a página do manual de cada regra.</p>
+      <div className="enter-row">
+        <${Button} type="primary" size="large" className="btn-enter" onClick=${entrar} icon=${html`<${ArrowRightOutlined} />`} iconPosition="end" autoFocus>Entrar<//>
+        ${desktop && html`<span className="dica">ou pressione <kbd>Enter</kbd></span>`}
+      </div>
+    </main>
+  </div>`;
+}
 
-  useEffect(() => { window.scrollTo({ top: 0 }); }, [st.atual]);
+function AppBar({ titulo, eyebrow, children }) {
+  return html`<header className="appbar"><div className="wrap appbar-in">
+    <div className="appbar-title"><span className="eyebrow">${eyebrow}</span><strong>${titulo}</strong></div>
+    <div className="appbar-right">${children}</div>
+  </div></header>`;
+}
+
+function Selecao({ st, up, iniciar, desktop }) {
+  const { modal } = AntApp.useApp();
+  const [aba, setAba] = useState(String(st.ultimaProva || 1));
+  const [fProvas, setFProvas] = useState(st.filtros?.provas || PROVAS.map(p => p.id));
+  const [fTemas, setFTemas] = useState(st.filtros?.temas || []);
+  const [qtd, setQtd] = useState(st.filtros?.qtd || TAM_BLOCO);
+  const [carregando, setCarregando] = useState(null);
+  const s = st.sessao;
+  const emAndamento = s && !s.entregueEm;
+
+  const pool = useMemo(() => fProvas.reduce((acc, p) => {
+    const c = MANIFESTO.contagem[p];
+    return acc + (fTemas.length ? fTemas.reduce((a, t) => a + (c[t] || 0), 0) : PROVAS.find(x => x.id === p).total);
+  }, 0), [fProvas, fTemas]);
+
+  const comConfirmacao = (titulo, conteudo, acao) => {
+    modal.confirm({
+      title: titulo,
+      content: emAndamento ? html`<div style=${{ display: "grid", gap: 8 }}><span>${conteudo}</span><span style=${{ color: "var(--warn)" }}>Você tem um bloco em andamento (${s.titulo}). Começar outro descarta as respostas dele.</span></div>` : conteudo,
+      okText: "Começar", cancelText: "Cancelar", onOk: acao
+    });
+  };
+
+  const abrirBloco = (p, b) => {
+    const ini = (b - 1) * TAM_BLOCO + 1, fim = Math.min(b * TAM_BLOCO, p.total);
+    const h = st.historico[`p${p.id}-b${b}`];
+    const n = fim - ini + 1;
+    comConfirmacao(`Prova ${p.id} · Bloco ${b}`,
+      `Questões ${ini} a ${fim} · ${n} questões${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : " · sem limite de tempo"}.` + (h ? ` Última tentativa: ${h.acertos}/${h.total}.` : ""),
+      async () => {
+        setCarregando("bloco");
+        try {
+          const qs = await carregarProva(p.id);
+          up({ ultimaProva: p.id });
+          iniciar({ chave: `p${p.id}-b${b}`, tipo: "bloco", prova: p.id, bloco: b, titulo: `Prova ${p.id} · Bloco ${b}`, questoes: qs.slice(ini - 1, fim) });
+        } catch (e) { antd.message.error(`Não foi possível carregar a Prova ${p.id}. Verifique a conexão e tente de novo.`); }
+        finally { setCarregando(null); }
+      });
+  };
+
+  const sortear = () => {
+    const n = Math.min(qtd, pool);
+    comConfirmacao("Simulado aleatório",
+      `${n} questões sorteadas de ${fProvas.length === PROVAS.length ? "todas as provas" : "Prova " + fProvas.slice().sort().join(", ")}${fTemas.length ? ", em " + fTemas.length + (fTemas.length === 1 ? " tema" : " temas") : ""}${st.cronometro ? " · " + n * MIN_POR_Q + " minutos" : ""}.`,
+      async () => {
+        setCarregando("rand");
+        try {
+          const listas = await Promise.all(fProvas.map(carregarProva));
+          let todas = listas.flat();
+          if (fTemas.length) todas = todas.filter(q => fTemas.includes(q.tema));
+          const filtros = { provas: fProvas, temas: fTemas, qtd };
+          up({ filtros });
+          iniciar({ chave: "aleatorio", tipo: "aleatorio", titulo: "Simulado aleatório", filtros, questoes: embaralhar(todas).slice(0, qtd) });
+        } catch (e) { antd.message.error("Não foi possível carregar as provas. Verifique a conexão e tente de novo."); }
+        finally { setCarregando(null); }
+      });
+  };
+
+  const limparHistorico = () => modal.confirm({
+    title: "Limpar o histórico?", content: "As notas de todos os blocos concluídos serão apagadas deste navegador.",
+    okText: "Limpar", okButtonProps: { danger: true }, cancelText: "Cancelar", onOk: () => up({ historico: {} })
+  });
+
+  const abaItens = PROVAS.map(p => {
+    const nb = nBlocos(p);
+    const feitos = Array.from({ length: nb }, (_, i) => st.historico[`p${p.id}-b${i + 1}`]).filter(Boolean);
+    const media = feitos.length ? Math.round(feitos.reduce((a, h) => a + h.acertos, 0) / feitos.reduce((a, h) => a + h.total, 0) * 100) : null;
+    return {
+      key: String(p.id), label: `Prova ${p.id}`,
+      children: html`<div>
+        <div className="prova-resumo">
+          <span><b>${p.total}</b> questões</span>
+          <span><b>${nb}</b> blocos</span>
+          <span><b>${feitos.length}</b> concluídos</span>
+          ${media !== null && html`<span>média <b>${media}%</b></span>`}
+        </div>
+        <div className="blocos">
+          ${Array.from({ length: nb }, (_, i) => {
+            const b = i + 1, ini = i * TAM_BLOCO + 1, fim = Math.min(b * TAM_BLOCO, p.total);
+            const h = st.historico[`p${p.id}-b${b}`];
+            const andando = emAndamento && s.chave === `p${p.id}-b${b}`;
+            const pct = h ? Math.round(h.acertos / h.total * 100) : 0;
+            return html`<button key=${b} className="bloco" disabled=${!!carregando} onClick=${() => andando ? up({ tela: "prova" }) : abrirBloco(p, b)}
+                aria-label=${`Bloco ${b}, questões ${ini} a ${fim}` + (h ? `, última nota ${h.acertos} de ${h.total}` : "") + (andando ? ", em andamento" : "")}>
+              <span className="t">Bloco ${b}</span>
+              <span className="r">${String(ini).padStart(3, "0")}–${String(fim).padStart(3, "0")}</span>
+              ${andando ? html`<span className="pill and">em andamento</span>`
+                : h ? html`<span className=${"pill " + faixa(pct)}>${h.acertos}/${h.total} · ${pct}%</span>`
+                : html`<span className="pill">não feito</span>`}
+            </button>`;
+          })}
+        </div>
+      </div>`
+    };
+  });
+
+  return html`<div>
+    <${AppBar} eyebrow="Banco Central do Brasil" titulo="Simulado COSIF"><${TemaBtn} /><//>
+    <main className="wrap selecao">
+      ${emAndamento && html`<div className="retomar">
+        <div className="t"><strong>${s.titulo} em andamento</strong>
+          <span>${Object.keys(s.respostas).length} de ${s.questoes.length} respondidas${s.fimEm ? " · " + fmt(s.fimEm - Date.now()) + " restantes" : ""}</span></div>
+        <div className="acoes">
+          <${Button} type="primary" icon=${html`<${PlayCircleOutlined} />`} onClick=${() => up({ tela: "prova" })}>Continuar<//>
+        </div>
+      </div>`}
+
+      <div className="sel-grid">
+        <section>
+          <${Card} styles=${{ body: { padding: desktop ? 24 : 16 } }}>
+            <div className="sec-head">
+              <h2 className="h2">Escolha a prova</h2>
+              <p>Cada prova foi dividida em blocos de até ${TAM_BLOCO} questões, na ordem original.</p>
+            </div>
+            <${Tabs} activeKey=${aba} onChange=${k => setAba(k)} items=${abaItens} />
+          <//>
+        </section>
+
+        <aside className="sel-side">
+          <${Card} styles=${{ body: { padding: desktop ? 24 : 16, display: "grid", gap: 16 } }}>
+            <div className="sec-head">
+              <h2 className="h2">Simulado aleatório</h2>
+              <p>Mistura as questões das provas escolhidas e sorteia um bloco novo a cada vez.</p>
+            </div>
+            <div className="campo">
+              <span className="lbl" id="lbl-provas">Provas</span>
+              <${Checkbox.Group} aria-labelledby="lbl-provas" value=${fProvas} onChange=${v => v.length && setFProvas(v)}
+                options=${PROVAS.map(p => ({ label: "Prova " + p.id, value: p.id }))} />
+            </div>
+            <div className="campo">
+              <label htmlFor="temas">Temas</label>
+              <${Select} id="temas" mode="multiple" allowClear placeholder="Todos os temas" value=${fTemas} onChange=${setFTemas}
+                maxTagCount="responsive" options=${TEMAS.map(t => ({ label: t, value: t }))} style=${{ width: "100%" }}
+                optionFilterProp="label" />
+            </div>
+            <div className="campo">
+              <span className="lbl">Quantidade</span>
+              <${Segmented} block value=${qtd} onChange=${setQtd} options=${[{ label: "5", value: 5 }, { label: "10", value: 10 }, { label: "20", value: 20 }]} />
+            </div>
+            <div className="pool"><span>Questões disponíveis</span><b>${num(pool)}</b></div>
+            <${Button} type="primary" size="large" block icon=${html`<${ThunderboltOutlined} />`} loading=${carregando === "rand"} disabled=${!pool || !!carregando} onClick=${sortear}>Sortear e começar<//>
+          <//>
+
+          <${Card} size="small">
+            <div className="opcao">
+              <${Switch} id="crono" checked=${st.cronometro} onChange=${v => up({ cronometro: v })} />
+              <label className="t" htmlFor="crono">
+                <span>Cronômetro</span>
+                <small>${MIN_POR_Q} minutos por questão, com entrega automática quando o tempo acaba. Desligado, o tempo só é contado.</small>
+              </label>
+            </div>
+          <//>
+        </aside>
+      </div>
+
+      <div className="rodape">
+        <span>Questões e comentários dos PDFs Prova_COSIF_FGV_BACEN_1 a 5, elaborados a partir do ManualCompleto.pdf. Notas salvas apenas neste navegador.</span>
+        ${Object.keys(st.historico).length > 0 && html`<${Button} type="link" size="small" onClick=${limparHistorico}>Limpar histórico<//>`}
+      </div>
+    </main>
+  </div>`;
+}
+
+function ProvaView({ st, up, upS, desktop, pedirEntrega, tempoEsgotado }) {
+  const s = st.sessao;
+  const [gaveta, setGaveta] = useState(false);
+  const total = s.questoes.length;
+  const q = s.questoes[s.atual];
+  const respondidas = Object.keys(s.respostas).length;
+  const marcadas = Object.values(s.marcadas).filter(Boolean).length;
+  const ir = (i) => { upS({ atual: Math.max(0, Math.min(total - 1, i)) }); setGaveta(false); };
+
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [s.atual]);
   useEffect(() => {
     const onKey = (e) => {
-      if (e.target.closest && e.target.closest("input, textarea, .ant-modal, .ant-drawer")) return;
+      if (e.target.closest && e.target.closest("input, textarea, .ant-select, .ant-modal, .ant-drawer")) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const k = e.key.toUpperCase();
-      if (e.key === "ArrowRight") { ir(st.atual + 1); return; }
-      if (e.key === "ArrowLeft") { ir(st.atual - 1); return; }
-      if (k === "M") { up(s => ({ marcadas: { ...s.marcadas, [q.id]: !s.marcadas[q.id] } })); return; }
-      const validas = opcoes(q).map(o => o.k);
-      if (validas.includes(k)) {
-        up(s => { const r = { ...s.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
+      if (e.key === "ArrowRight") { ir(s.atual + 1); return; }
+      if (e.key === "ArrowLeft") { ir(s.atual - 1); return; }
+      if (k === "M") { upS(x => ({ marcadas: { ...x.marcadas, [q.id]: !x.marcadas[q.id] } })); return; }
+      if (LETRAS.includes(k) && k.length === 1) {
+        upS(x => { const r = { ...x.respostas }; if (r[q.id] === k) delete r[q.id]; else r[q.id] = k; return { respostas: r }; });
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [st.atual, q]);
+  }, [s.atual, q]);
 
   const resumo = html`<div className="resumo">
     <div><b>${respondidas}</b><small>respondidas</small></div>
@@ -489,16 +699,22 @@ function ProvaView({ st, up, desktop, pedirEntrega, tempoEsgotado }) {
   </div>`;
 
   return html`<div>
-    <header className="topbar">
-      <div className="wrap topbar-in">
-        <div className="tb-title">
-          <span className="eyebrow">${st.nome ? st.nome : "Prova em andamento"}</span>
-          <strong>${PROVA.titulo}</strong>
+    <header className="appbar">
+      <div className="wrap appbar-in">
+        <div style=${{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          <${Tooltip} title="Voltar à escolha de provas (o progresso fica salvo)">
+            <${Button} aria-label="Voltar à escolha de provas" icon=${html`<${ArrowLeftOutlined} />`} onClick=${() => up({ tela: "selecao" })} />
+          <//>
+          <div className="appbar-title">
+            <span className="eyebrow">Simulado COSIF</span>
+            <strong>${s.titulo}</strong>
+          </div>
         </div>
-        <div className="tb-right">
-          <${Timer} fimEm=${st.fimEm} onEnd=${tempoEsgotado} />
+        <div className="appbar-right">
+          <${Timer} s=${s} onEnd=${tempoEsgotado} />
+          ${desktop && html`<${TemaBtn} />`}
           ${!desktop && html`<${Button} aria-label="Abrir cartão-resposta" icon=${html`<${AppstoreOutlined} />`} onClick=${() => setGaveta(true)} />`}
-          <${Button} type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>${desktop ? "Entregar prova" : "Entregar"}<//>
+          <${Button} type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>${desktop ? "Entregar bloco" : "Entregar"}<//>
         </div>
       </div>
       <div className="barra" aria-hidden="true"><i style=${{ width: (respondidas / total) * 100 + "%" }}></i></div>
@@ -506,159 +722,210 @@ function ProvaView({ st, up, desktop, pedirEntrega, tempoEsgotado }) {
 
     <main className=${"wrap prova-grid" + (desktop ? "" : " mobile")}>
       <section style=${{ minWidth: 0 }}>
-        <${Card} styles=${{ body: { padding: desktop ? 28 : 18 } }}>
-          <${Questao} key=${q.id} q=${q} idx=${st.atual} st=${st} up=${up} />
+        <${Card} styles=${{ body: { padding: desktop ? 28 : 16 } }}>
+          <${Questao} key=${q.id} q=${q} idx=${s.atual} s=${s} upS=${upS} />
           ${desktop && html`<div className="q-nav">
-            <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${st.atual === 0} onClick=${() => ir(st.atual - 1)}>Anterior<//>
-            ${st.atual < total - 1
-              ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(st.atual + 1)}>Próxima <${RightOutlined} /><//>`
-              : html`<${Button} size="large" type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>Entregar prova<//>`}
+            <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${s.atual === 0} onClick=${() => ir(s.atual - 1)}>Anterior<//>
+            ${s.atual < total - 1
+              ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(s.atual + 1)}>Próxima <${RightOutlined} /><//>`
+              : html`<${Button} size="large" type="primary" icon=${html`<${SendOutlined} />`} onClick=${pedirEntrega}>Entregar bloco<//>`}
           </div>`}
         <//>
       </section>
       ${desktop && html`<aside className="side">
-        <${Card} size="small" title="Cartão-resposta">
-          <${Cartao} st=${st} onIr=${ir} />
-        <//>
+        <${Card} size="small" title="Cartão-resposta"><${Cartao} s=${s} onIr=${ir} /><//>
         <${Card} size="small">${resumo}<//>
         <div className="atalhos">Atalhos: <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>A</kbd>–<kbd>E</kbd> responder · <kbd>M</kbd> marcar</div>
       </aside>`}
     </main>
 
     ${!desktop && html`<nav className="bottombar" aria-label="Navegação entre questões">
-      <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${st.atual === 0} onClick=${() => ir(st.atual - 1)}>Anterior<//>
-      <span className="meio">${st.atual + 1} / ${total}</span>
-      ${st.atual < total - 1
-        ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(st.atual + 1)}>Próxima <${RightOutlined} /><//>`
+      <${Button} size="large" icon=${html`<${LeftOutlined} />`} disabled=${s.atual === 0} onClick=${() => ir(s.atual - 1)}>Anterior<//>
+      <span className="meio">${s.atual + 1} / ${total}</span>
+      ${s.atual < total - 1
+        ? html`<${Button} size="large" type="primary" ghost onClick=${() => ir(s.atual + 1)}>Próxima <${RightOutlined} /><//>`
         : html`<${Button} size="large" type="primary" onClick=${pedirEntrega}>Entregar<//>`}
     </nav>`}
 
     <${Drawer} title="Cartão-resposta" placement="bottom" height="auto" open=${gaveta} onClose=${() => setGaveta(false)}
+      extra=${html`<${TemaBtn} />`}
       styles=${{ body: { paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))" } }}>
       <div style=${{ display: "grid", gap: 18, maxWidth: 520, margin: "0 auto" }}>
-        <${Cartao} st=${st} onIr=${ir} />
+        <${Cartao} s=${s} onIr=${ir} />
         ${resumo}
       </div>
     <//>
   </div>`;
 }
 
-function ResultadoView({ st, refazer, desktop }) {
-  const r = useMemo(() => corrigir(st), [st]);
-  const [filtro, setFiltro] = useState("todas");
-  const tempo = st.entregueEm && st.inicioEm ? Math.min(st.entregueEm, st.fimEm) - st.inicioEm : 0;
-  const lista = PROVA.questoes.map((q, i) => ({ q, i })).filter(({ q }) =>
-    filtro === "todas" ? true : filtro === "erradas" ? r.status[q.id] === "errada" : filtro === "branco" ? r.status[q.id] === "branco" : r.status[q.id] === "certa");
+function ResultadoView({ st, up, desktop, iniciar }) {
+  const s = st.sessao;
+  const r = useMemo(() => corrigir(s), [s]);
+  const [filtro, setFiltro] = useState(r.er + r.br > 0 ? "revisar" : "todas");
+  const tempo = s.entregueEm - s.inicioEm;
+  const tempoTotal = s.fimEm ? s.fimEm - s.inicioEm : null;
+  const lista = s.questoes.map((q, i) => ({ q, i })).filter(({ q }) =>
+    filtro === "todas" ? true : filtro === "revisar" ? r.status[q.id] !== "certa" : r.status[q.id] === "certa");
   const irPara = (i) => {
     setFiltro("todas");
-    setTimeout(() => { const el = document.getElementById("g-" + PROVA.questoes[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
+    setTimeout(() => { const el = document.getElementById("g-" + s.questoes[i].id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
   };
   const corPct = r.pct >= 70 ? "var(--ok)" : r.pct >= 50 ? "var(--warn)" : "var(--bad)";
   const statusTag = { certa: html`<${Tag} color="success" bordered=${false}>Acertou<//>`, errada: html`<${Tag} color="error" bordered=${false}>Errou<//>`, branco: html`<${Tag} bordered=${false}>Em branco<//>` };
+  const prova = s.tipo === "bloco" ? PROVAS.find(p => p.id === s.prova) : null;
+  const temProximo = prova && s.bloco < nBlocos(prova);
 
-  return html`<main className="wrap resultado">
-    <${Card} styles=${{ body: { padding: desktop ? 28 : 18 } }}>
-      <div className="placar">
-        <${Progress} type="dashboard" percent=${r.pct} size=${desktop ? 150 : 128} strokeColor=${corPct}
-          format=${p => html`<div style=${{ display: "grid", gap: 2 }}><span style=${{ fontFamily: "var(--font-num)", fontWeight: 600, color: "var(--ink)" }}>${p}%</span><span style=${{ fontSize: 12, color: "var(--muted)" }}>aproveitamento</span></div>`} />
-        <div className="info">
-          <div>
-            <span className="eyebrow">Prova entregue${st.nome ? " · " + st.nome : ""}</span>
-            <h1>${PROVA.titulo}</h1>
-            <span style=${{ color: "var(--muted)" }}>Tempo utilizado: ${fmt(tempo)} de ${PROVA.duracaoMin}:00 · ${st.anula ? "uma errada anula uma certa" : "apenas acertos contam"}</span>
-          </div>
-          <div className="stats">
-            <div className="stat ok"><small>Acertos</small><b>${r.ac}</b></div>
-            <div className="stat bad"><small>Erros</small><b>${r.er}</b></div>
-            <div className="stat"><small>Em branco</small><b>${r.br}</b></div>
-            <div className="stat"><small>Nota final</small><b>${r.nota}/${r.total}</b></div>
+  const refazer = async () => {
+    if (s.tipo === "bloco") iniciar({ ...s, questoes: s.questoes });
+    else {
+      try {
+        const listas = await Promise.all(s.filtros.provas.map(carregarProva));
+        let todas = listas.flat(); if (s.filtros.temas.length) todas = todas.filter(q => s.filtros.temas.includes(q.tema));
+        iniciar({ chave: "aleatorio", tipo: "aleatorio", titulo: "Simulado aleatório", filtros: s.filtros, questoes: embaralhar(todas).slice(0, s.filtros.qtd) });
+      } catch (e) { antd.message.error("Não foi possível carregar as provas. Verifique a conexão e tente de novo."); }
+    }
+  };
+  const proximo = async () => {
+    const b = s.bloco + 1, ini = (b - 1) * TAM_BLOCO, fim = Math.min(b * TAM_BLOCO, prova.total);
+    try {
+      const qs = await carregarProva(prova.id);
+      iniciar({ chave: `p${prova.id}-b${b}`, tipo: "bloco", prova: prova.id, bloco: b, titulo: `Prova ${prova.id} · Bloco ${b}`, questoes: qs.slice(ini, fim) });
+    } catch (e) { antd.message.error(`Não foi possível carregar a Prova ${prova.id}. Verifique a conexão e tente de novo.`); }
+  };
+
+  const acoes = html`<div className="res-acoes">
+    ${temProximo && html`<${Button} type="primary" size="large" icon=${html`<${ArrowRightOutlined} />`} iconPosition="end" onClick=${proximo}>Próximo bloco<//>`}
+    <${Button} size="large" type=${temProximo ? "default" : "primary"} icon=${html`<${ReloadOutlined} />`} onClick=${refazer}>${s.tipo === "bloco" ? "Refazer este bloco" : "Novo sorteio"}<//>
+    <${Button} size="large" icon=${html`<${AppstoreOutlined} />`} onClick=${() => up({ tela: "selecao" })}>Escolher outra prova<//>
+  </div>`;
+
+  return html`<div>
+    <${AppBar} eyebrow="Resultado" titulo=${s.titulo}>
+      <${Button} aria-label="Voltar à escolha de provas" icon=${html`<${ArrowLeftOutlined} />`} onClick=${() => up({ tela: "selecao" })}>${desktop ? "Provas" : null}<//>
+      <${TemaBtn} />
+    <//>
+    <main className="wrap resultado">
+      <${Card} styles=${{ body: { padding: desktop ? 28 : 16 } }}>
+        <div className="placar">
+          <${Progress} type="dashboard" percent=${r.pct} size=${desktop ? 150 : 124} strokeColor=${corPct}
+            format=${p => html`<div style=${{ display: "grid", gap: 2 }}><span style=${{ fontFamily: "var(--font-num)", fontWeight: 600, color: "var(--ink)" }}>${p}%</span><span style=${{ fontSize: 12, color: "var(--muted)" }}>de acertos</span></div>`} />
+          <div className="info">
+            <div>
+              <span className="eyebrow">Bloco entregue</span>
+              <h1>${s.titulo}</h1>
+              <span style=${{ color: "var(--muted)" }}>Tempo: ${fmt(tempo)}${tempoTotal ? " de " + fmt(tempoTotal) : ""}${s.tipo === "bloco" ? ` · questões ${s.questoes[0].n} a ${s.questoes[s.questoes.length - 1].n}` : ""}</span>
+            </div>
+            <div className="stats">
+              <div className="stat ok"><small>Acertos</small><b>${r.ac}</b></div>
+              <div className="stat bad"><small>Erros</small><b>${r.er}</b></div>
+              <div className="stat"><small>Em branco</small><b>${r.br}</b></div>
+              <div className="stat"><small>Nota</small><b>${r.ac}/${r.total}</b></div>
+            </div>
+            ${acoes}
           </div>
         </div>
+      <//>
+
+      <div className="duas">
+        <${Card} title="Temas para revisar" size="small">
+          ${r.temasErro.length === 0
+            ? html`<${Empty} image=${Empty.PRESENTED_IMAGE_SIMPLE} description="Você acertou todas. Nenhum tema para revisar." />`
+            : r.temasErro.map(([t, n]) => html`<div className="tema-linha" key=${t}><span>${t}</span><span>${n} ${n === 1 ? "questão" : "questões"}</span></div>`)}
+        <//>
+        <${Card} title="Seu cartão-resposta" size="small"><${Cartao} s=${s} onIr=${irPara} status=${r.status} /><//>
       </div>
-    <//>
 
-    <div className="duas">
-      <${Card} title="Desempenho por disciplina" size="small">
-        ${r.porDisc.map(d => html`<div className="disc-linha" key=${d.disc}>
-          <div className="top"><span>${d.disc}</span><span>${d.acertos}/${d.total}</span></div>
-          <${Progress} percent=${Math.round((d.acertos / d.total) * 100)} size="small" strokeColor=${d.acertos / d.total >= 0.7 ? "var(--ok)" : d.acertos / d.total >= 0.5 ? "var(--warn)" : "var(--bad)"} />
-        </div>`)}
-      <//>
-      <${Card} title="Seu cartão-resposta" size="small">
-        <${Cartao} st=${st} onIr=${irPara} status=${r.status} />
-      <//>
-    </div>
+      <div className="gab-head">
+        <h2 className="h2">Gabarito comentado</h2>
+        <${Segmented} value=${filtro} onChange=${setFiltro} options=${[
+          { label: "Para revisar (" + (r.er + r.br) + ")", value: "revisar" },
+          { label: "Acertos (" + r.ac + ")", value: "certas" },
+          { label: "Todas (" + r.total + ")", value: "todas" }
+        ]} />
+      </div>
 
-    <div className="gab-head">
-      <h2>Gabarito comentado</h2>
-      <${Segmented} value=${filtro} onChange=${setFiltro} options=${[
-        { label: "Todas (" + r.total + ")", value: "todas" },
-        { label: "Erros (" + r.er + ")", value: "erradas" },
-        { label: "Em branco (" + r.br + ")", value: "branco" },
-        { label: "Acertos (" + r.ac + ")", value: "certas" }
-      ]} />
-    </div>
-
-    <div className="gab-lista">
-      ${lista.length === 0 && html`<${Card}><${Empty} description="Nenhuma questão neste filtro." /><//>`}
-      ${lista.map(({ q, i }) => {
-        const resp = st.respostas[q.id];
-        return html`<${Card} key=${q.id} id=${"g-" + q.id} className="gab-item" styles=${{ body: { padding: desktop ? 24 : 16 } }}>
-          <div className="q">
-            <div className="q-head">
-              <div><span className="q-num">Questão ${i + 1}</span><span className="q-of">${q.disciplina}</span></div>
-              ${statusTag[r.status[q.id]]}
+      <div className="gab-lista">
+        ${lista.length === 0 && html`<${Card}><${Empty} description="Nenhuma questão neste filtro." /><//>`}
+        ${lista.map(({ q, i }) => {
+          const resp = s.respostas[q.id];
+          return html`<${Card} key=${q.id} id=${"g-" + q.id} className="gab-item" styles=${{ body: { padding: desktop ? 24 : 16 } }}>
+            <div className="q">
+              <div className="q-head">
+                <div><span className="q-num">Questão ${i + 1}</span></div>
+                <div className="q-tags">${statusTag[r.status[q.id]]}<${Origem} q=${q} /></div>
+              </div>
+              <div className="q-tags"><${Tag}>${q.tema}<//></div>
+              <p className="enunciado">${q.enunciado}</p>
+              ${q.tipo === "vf" && html`<ol className="itens">${q.itens.map((t, k) => html`<li key=${k}><div className="item-txt"><span className="item-n">${k + 1}</span><span>${t}</span></div></li>`)}</ol>`}
+              <div className="alts">
+                ${opcoes(q).map(o => {
+                  const ehGab = o.k === q.gabarito, ehResp = o.k === resp;
+                  const rev = ehGab ? "correta" : ehResp ? "errada" : "";
+                  const marca = ehResp ? "Sua resposta" : ehGab ? "Gabarito" : "";
+                  return html`<${Alt} key=${o.k} o=${o} seq=${q.tipo === "vf"} rev=${rev} marca=${marca} />`;
+                })}
+              </div>
+              <div className="coment"><b>Comentário · gabarito ${q.gabarito}</b><${Comentario} texto=${q.comentario} /></div>
             </div>
-            ${q.texto && html`<blockquote className="texto-base">${q.texto}</blockquote>`}
-            <p className="enunciado">${q.enunciado}</p>
-            <div className="alts">
-              ${opcoes(q).map(o => {
-                const ehGab = o.k === q.gabarito, ehResp = o.k === resp;
-                const rev = ehGab ? "correta" : ehResp ? "errada" : "";
-                const marca = ehGab && ehResp ? "Sua resposta" : ehGab ? "Gabarito" : ehResp ? "Sua resposta" : "";
-                return html`<${Alt} key=${o.k} o=${o} rev=${rev} marca=${marca} />`;
-              })}
-            </div>
-            <p className="coment"><b>Comentário</b>${q.comentario}</p>
-          </div>
-        <//>`;
-      })}
-    </div>
-
-    <div style=${{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-      <${Button} type="primary" size="large" icon=${html`<${ReloadOutlined} />`} onClick=${refazer}>Fazer a prova de novo<//>
-    </div>
-  </main>`;
+          <//>`;
+        })}
+      </div>
+      ${acoes}
+    </main>
+  </div>`;
 }
 
 /* ---------- App ---------- */
+const BLANK = { tela: "boasvindas", sessao: null, historico: {}, ultimaProva: 1, cronometro: true, filtros: null };
+
 function Main() {
   const screens = Grid.useBreakpoint();
   const desktop = !!screens.lg;
   const { modal, message } = AntApp.useApp();
-  const [st, setSt] = useState(() => ({ ...BLANK, ...(carregar() || {}) }));
-  useEffect(() => { salvar(st); }, [st]);
-  const up = (patch) => setSt(s => ({ ...s, ...(typeof patch === "function" ? patch(s) : patch) }));
+  const [st, setSt] = useState(() => ({ ...BLANK, ...(carregar() || {}), tela: "boasvindas" }));
+  useEffect(() => { const { tela, ...resto } = st; salvar({ ...resto, tela: tela === "boasvindas" ? "selecao" : tela }); }, [st]);
+  const up = (patch) => setSt(x => ({ ...x, ...(typeof patch === "function" ? patch(x) : patch) }));
+  const upS = (patch) => setSt(x => ({ ...x, sessao: { ...x.sessao, ...(typeof patch === "function" ? patch(x.sessao) : patch) } }));
 
-  const entregar = () => { up({ fase: "resultado", entregueEm: Date.now() }); window.scrollTo({ top: 0 }); };
-  const tempoEsgotado = () => { message.warning("O tempo acabou. Sua prova foi entregue automaticamente.", 5); entregar(); };
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [st.tela]);
+
+  const entrar = () => {
+    const s = st.sessao;
+    up({ tela: "selecao" });
+  };
+  const iniciar = ({ chave, tipo, prova, bloco, titulo, filtros, questoes }) => {
+    const agora = Date.now();
+    up(x => ({
+      tela: "prova",
+      sessao: { chave, tipo, prova, bloco, titulo, filtros, questoes, respostas: {}, riscadas: {}, marcadas: {}, vf: {}, atual: 0,
+        inicioEm: agora, fimEm: x.cronometro ? agora + questoes.length * MIN_POR_Q * 60000 : null, entregueEm: null }
+    }));
+  };
+  const entregar = () => setSt(x => {
+    const s = { ...x.sessao, entregueEm: Math.min(Date.now(), x.sessao.fimEm || Infinity) };
+    const r = corrigir(s);
+    const historico = s.tipo === "bloco" ? { ...x.historico, [s.chave]: { acertos: r.ac, total: r.total, em: Date.now() } } : x.historico;
+    return { ...x, sessao: s, historico, tela: "resultado" };
+  });
+  const tempoEsgotado = () => { message.warning("O tempo acabou. O bloco foi entregue automaticamente.", 5); entregar(); };
   const pedirEntrega = () => {
-    const resp = Object.keys(st.respostas).length, total = PROVA.questoes.length;
-    const marc = Object.values(st.marcadas).filter(Boolean).length;
+    const s = st.sessao;
+    const resp = Object.keys(s.respostas).length, total = s.questoes.length;
+    const marc = Object.values(s.marcadas).filter(Boolean).length;
     const avisos = [];
     if (total - resp > 0) avisos.push((total - resp) + (total - resp === 1 ? " questão em branco" : " questões em branco"));
     if (marc > 0) avisos.push(marc + (marc === 1 ? " marcada para revisão" : " marcadas para revisão"));
     modal.confirm({
-      title: "Entregar a prova?",
+      title: "Entregar o bloco?",
       content: avisos.length ? "Você ainda tem " + avisos.join(" e ") + ". Depois de entregar, não é possível alterar as respostas." : "Todas as questões foram respondidas. Depois de entregar, não é possível alterar as respostas.",
-      okText: "Entregar prova", cancelText: "Continuar respondendo", onOk: entregar
+      okText: "Entregar", cancelText: "Continuar respondendo", onOk: entregar
     });
   };
-  const refazer = () => { setSt(s => ({ ...BLANK, nome: s.nome, anula: s.anula })); window.scrollTo({ top: 0 }); };
 
-  if (st.fase === "prova") return html`<${ProvaView} st=${st} up=${up} desktop=${desktop} pedirEntrega=${pedirEntrega} tempoEsgotado=${tempoEsgotado} />`;
-  if (st.fase === "resultado") return html`<${ResultadoView} st=${st} refazer=${refazer} desktop=${desktop} />`;
-  return html`<${Inicio} st=${st} up=${up} desktop=${desktop} />`;
+  if (st.tela === "prova" && st.sessao && !st.sessao.entregueEm) return html`<${ProvaView} st=${st} up=${up} upS=${upS} desktop=${desktop} pedirEntrega=${pedirEntrega} tempoEsgotado=${tempoEsgotado} />`;
+  if (st.tela === "resultado" && st.sessao && st.sessao.entregueEm) return html`<${ResultadoView} st=${st} up=${up} desktop=${desktop} iniciar=${iniciar} />`;
+  if (st.tela === "boasvindas") return html`<${BoasVindas} entrar=${entrar} desktop=${desktop} />`;
+  return html`<${Selecao} st=${st} up=${up} iniciar=${iniciar} desktop=${desktop} />`;
 }
 
 function Root() {
@@ -682,5 +949,6 @@ function Root() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(html`<${Root} />`);
 </script>
+
 </body>
 </html>

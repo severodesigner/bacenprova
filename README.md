@@ -1,11 +1,13 @@
-# Caderno de Prova Digital
+# Simulado COSIF · BACEN
 
-Protótipo responsivo (celular e desktop) para resolver provas de concurso, feito com React e Ant Design 5.
+App responsivo (celular e desktop), feito com React e Ant Design 5, para resolver as 5 provas do Simulado COSIF no estilo FGV (1.750 questões).
 
-- Múltipla escolha (A–E) e certo/errado
-- Cronômetro com entrega automática
-- Riscar alternativas e marcar para revisão
-- Cartão-resposta e gabarito comentado
-- Opção "uma errada anula uma certa"
+- Tela de boas-vindas
+- Escolha da prova, dividida em blocos de até 20 questões
+- Simulado aleatório que mistura as questões, com filtro por prova e por tema
+- Questões V/F com marcação item a item
+- Cronômetro opcional (3 min por questão), riscar alternativas e marcar para revisão
+- Gabarito comentado com a página do manual e temas para revisar
+- Tema claro e escuro
 
-Tudo está em `index.html`. As questões ficam no objeto `PROVA`, no início do script.
+As questões ficam em `data/prova1.json` a `data/prova5.json`. Histórico e progresso ficam salvos só no navegador de quem usa.
